@@ -1,4 +1,4 @@
 package org.example.monikasfrisrsalon2.c_model;
 
-public class Bookings {
+public enum Timestamp {
 }

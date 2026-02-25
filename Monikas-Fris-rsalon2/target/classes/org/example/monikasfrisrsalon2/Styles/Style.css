@@ -1,0 +1,203 @@
+@font-face {
+    -fx-font-family: "Louis George Cafe";
+    src: url(../Fonts/Louis_George_Cafe.ttf);
+}
+
+.title {
+    -fx-font-family: "Louis George Cafe";
+    -fx-font-size: 42;
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+.label-small {
+    -fx-font-family: "Louis George Cafe";
+    -fx-font-size: 16;
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+
+
+.mfx-button {
+    -fx-background-radius: 10;
+    -fx-padding: 10 14;
+    -fx-font-weight: 700;
+
+
+    -mfx-button-type: RAISED;
+    -mfx-depth-level: LEVEL3;
+}
+
+
+.mfx-button.primary {
+    -fx-background-color: #5e81ac;
+    -fx-text-fill: white;
+}
+
+.mfx-button.danger {
+    -fx-background-color: #bf616a;
+    -fx-text-fill: white;
+}
+
+.mfx-button.ghost {
+    -mfx-button-type: FLAT;
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 1);
+    -fx-border-color: rgba(255, 255, 255, 1);
+    -fx-border-radius: 2;
+    -fx-border-width: 1;
+}
+
+.mfx-text-field {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 10 12;
+    -fx-border-color: rgba(255, 255, 255, 1);
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+
+
+.mfx-text-field .floating-text {
+    -fx-font-weight: 700;
+    -fx-opacity: 0.85;
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+
+
+.mfx-text-field .text-field {
+    -fx-background-color: transparent;
+}
+
+
+
+.appointments-table {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-border-width: 1;
+    -fx-padding: 10;
+}
+
+
+.appointments-table .column-header-background {
+    -fx-background-color: #F4EFE6;
+    -fx-background-radius: 14 14 0 0;
+    -fx-padding: 10 10 8 10;
+}
+
+.appointments-table .column-header,
+.appointments-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 42px;
+}
+
+.appointments-table .label {
+    -fx-text-fill: #2C241C;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+}
+
+.appointments-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-cell-size: 44px;
+}
+
+.appointments-table .table-cell {
+    -fx-text-fill: #2C241C;
+    -fx-font-size: 13px;
+    -fx-padding: 10 12;
+    -fx-border-color: transparent transparent rgba(0,0,0,0.06) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+
+.appointments-table .table-row-cell:odd .table-cell {
+    -fx-background-color: rgba(0,0,0,0.02);
+}
+.appointments-table .table-row-cell:even .table-cell {
+    -fx-background-color: transparent;
+}
+
+
+.appointments-table .table-row-cell:hover .table-cell {
+    -fx-background-color: rgba(194,178,128,0.18);
+}
+.appointments-table .table-row-cell:selected .table-cell {
+    -fx-background-color: rgba(194,178,128,0.35);
+    -fx-text-fill: #1F1A14;
+}
+
+.appointments-table .mfx-table-view {
+    -fx-background-color: transparent;
+}
+
+.appointments-table .mfx-table-row,
+.appointments-table .mfx-table-row-cell,
+.appointments-table .mfx-table-row-cell .label {
+    -fx-text-fill: #2C241C;
+}
+
+.appointments-table .mfx-table-row-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 10 12;
+    -fx-border-color: transparent transparent rgba(0,0,0,0.06) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.appointments-table .mfx-table-row-cell:hover {
+    -fx-background-color: rgba(194,178,128,0.18);
+}
+
+.appointments-table .mfx-table-row-cell:selected {
+    -fx-background-color: rgba(194,178,128,0.35);
+}
+
+
+.appointments-table .mfx-table-column,
+.appointments-table .mfx-table-column .label {
+    -fx-text-fill: #2C241C;
+    -fx-font-weight: 700;
+}
+
+
+.appointments-table .pagination,
+.appointments-table .mfx-pagination {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0 0 0;
+}
+
+.appointments-table .pagination .control-box {
+    -fx-background-color: transparent;
+}
+
+.appointments-table .pagination .button,
+.appointments-table .mfx-icon-button,
+.appointments-table .mfx-button {
+    -fx-background-color: rgba(255,255,255,0.75);
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+}
+
+.appointments-table .pagination .button:hover,
+.appointments-table .mfx-icon-button:hover,
+.appointments-table .mfx-button:hover {
+    -fx-background-color: rgba(194,178,128,0.20);
+}
+
+
+.appointments-table .scroll-bar:vertical,
+.appointments-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.appointments-table .scroll-bar .track {
+    -fx-background-color: rgba(0,0,0,0.05);
+    -fx-background-radius: 999;
+}
+.appointments-table .scroll-bar .thumb {
+    -fx-background-color: rgba(0,0,0,0.20);
+    -fx-background-radius: 999;
+}
+.appointments-table .scroll-bar .thumb:hover {
+    -fx-background-color: rgba(0,0,0,0.28);
+}
+

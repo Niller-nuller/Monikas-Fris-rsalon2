@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080" prefWidth="1920" style="-fx-background-color: linear-gradient(to bottom right, #C2B280, #DECAB7);" stylesheets="@Styles/Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikasfrisrsalon2.a_controller.LoginController">
+    <children>
+        <Label alignment="CENTER" layoutX="810.0" layoutY="280.0" prefHeight="50.0" prefWidth="300.0" styleClass="title" text="Hårmoni'ka" />
+        <Line layoutX="785.0" layoutY="340.0" endX="350.0" endY="0.0" startX="0.0" startY="0.0" stroke="white" />
+        <Label alignment="CENTER" layoutX="810.0" layoutY="355.0" prefWidth="300.0" styleClass="label-small" text="Administrator Panel · Login" />
+        <Label alignment="CENTER" layoutX="810.0" layoutY="355.0" prefWidth="500.00" styleClass="danger" fx:id="errorLabel" opacity="0"/>
+        <MFXTextField AnchorPane.leftAnchor="810" floatingText="Username" layoutY="550.0" prefHeight="70.0" prefWidth="300.0" styleClass="mfx-text-field" fx:id="usernameTextfield" />
+        <MFXPasswordField AnchorPane.leftAnchor="810" floatingText="Password" layoutY="640.0" prefHeight="70.0" prefWidth="300.0" styleClass="mfx-text-field" fx:id="passwordfield" />
+        <MFXButton layoutX="810.0" layoutY="730.0" prefHeight="50.0" prefWidth="135.0" styleClass="ghost" text="Login" onAction="#onLoginButtonClick" />
+        <MFXButton layoutX="975.0" layoutY="730.0" prefHeight="50.0" prefWidth="135.0" styleClass="ghost" text="Sign up" />
+        <MFXButton AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" prefHeight="50" prefWidth="150" styleClass="ghost" text="Exit" />
+    </children>
+</AnchorPane>
