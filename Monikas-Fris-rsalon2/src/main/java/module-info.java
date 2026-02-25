@@ -1,0 +1,9 @@
+module org.example.monikasfrisrsalon2 {
+    requires javafx.controls;
+    requires javafx.fxml;
+
+    requires org.kordamp.ikonli.javafx;
+
+    opens org.example.monikasfrisrsalon2 to javafx.fxml;
+    exports org.example.monikasfrisrsalon2;
+}
