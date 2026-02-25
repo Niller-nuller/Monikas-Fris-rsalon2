@@ -6,4 +6,6 @@ module org.example.monikasfrisrsalon2 {
 
     opens org.example.monikasfrisrsalon2 to javafx.fxml;
     exports org.example.monikasfrisrsalon2;
+    exports org.example.monikasfrisrsalon2.a_controller;
+    opens org.example.monikasfrisrsalon2.a_controller to javafx.fxml;
 }

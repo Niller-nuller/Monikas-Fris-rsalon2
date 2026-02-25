@@ -1,4 +1,4 @@
-package org.example.monikasfrisrsalon2;
+package org.example.monikasfrisrsalon2.a_controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
