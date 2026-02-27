@@ -80,16 +80,24 @@
 .appointments-table .column-header-background {
     -fx-background-color: #F4EFE6;
     -fx-background-radius: 14 14 0 0;
-    -fx-padding: 10 10 8 10;
+    -fx-min-height: 48px;
+    -fx-pref-height: 48px;
+    -fx-max-height: 48px;
+    -fx-padding: 6 10 6 10;
 }
 
 .appointments-table .column-header,
-.appointments-table .filler {
+.appointments-table .filler,
+.appointments-table .mfx-table-column {
     -fx-background-color: transparent;
-    -fx-size: 42px;
+    -fx-min-height: 48px;
+    -fx-pref-height: 48px;
+    -fx-max-height: 48px;
+    -fx-alignment: center-left;
 }
 
-.appointments-table .label {
+.appointments-table .column-header .label,
+.appointments-table .mfx-table-column .label {
     -fx-text-fill: #2C241C;
     -fx-font-size: 14px;
     -fx-font-weight: 700;
@@ -97,13 +105,13 @@
 
 .appointments-table .table-row-cell {
     -fx-background-color: transparent;
-    -fx-cell-size: 44px;
+    -fx-cell-size: 56px;
 }
 
 .appointments-table .table-cell {
     -fx-text-fill: #2C241C;
     -fx-font-size: 13px;
-    -fx-padding: 10 12;
+    -fx-padding: 0 12;
     -fx-border-color: transparent transparent rgba(0,0,0,0.06) transparent;
     -fx-border-width: 0 0 1 0;
 }
@@ -137,21 +145,43 @@
 
 .appointments-table .mfx-table-row-cell {
     -fx-background-color: transparent;
-    -fx-padding: 10 12;
+    -fx-padding: 0;
     -fx-border-color: transparent transparent rgba(0,0,0,0.06) transparent;
     -fx-border-width: 0 0 1 0;
+    -fx-min-height: 56px;
+    -fx-pref-height: 56px;
+    -fx-max-height: 56px;
 }
 
-.appointments-table .mfx-table-row-cell:hover {
+.appointments-table .mfx-table-row {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-min-height: 56px;
+    -fx-pref-height: 56px;
+    -fx-max-height: 56px;
+}
+
+.appointments-table .mfx-table-row:odd {
+    -fx-background-color: rgba(0,0,0,0.02);
+}
+.appointments-table .mfx-table-row:even {
+    -fx-background-color: transparent;
+}
+
+.appointments-table .mfx-table-row:hover {
     -fx-background-color: rgba(194,178,128,0.18);
 }
+
 
 .appointments-table .mfx-table-row-cell:selected {
     -fx-background-color: rgba(194,178,128,0.35);
 }
 
 
-.appointments-table .mfx-table-column,
+.appointments-table .mfx-table-column {
+    -fx-padding: 0 12;
+    -fx-alignment: center-left;
+}
 .appointments-table .mfx-table-column .label {
     -fx-text-fill: #2C241C;
     -fx-font-weight: 700;
@@ -199,5 +229,42 @@
 }
 .appointments-table .scroll-bar .thumb:hover {
     -fx-background-color: rgba(0,0,0,0.28);
+}
+
+.table-action-btn {
+    -fx-padding: 0;
+    -fx-background-radius: 8;
+    -fx-min-width: 28;
+    -fx-pref-width: 28;
+    -fx-max-width: 28;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+}
+
+.mfx-table-row .appt-text-cell .label {
+    -fx-alignment: center-left;
+    -fx-translate-y: 0;
+    -fx-padding: 0 12;
+}
+
+.mfx-table-view .virtual-flow .mfx-table-row {
+    -fx-min-height: 56px;
+    -fx-pref-height: 56px;
+    -fx-max-height: 56px;
+    -fx-alignment: center-left;
+}
+
+.mfx-table-view .virtual-flow .mfx-table-row .mfx-table-row-cell {
+    -fx-min-height: 56px;
+    -fx-pref-height: 56px;
+    -fx-max-height: 56px;
+    -fx-alignment: center-left;
+}
+
+.mfx-table-view .virtual-flow .mfx-table-row .mfx-table-row-cell .label {
+    -fx-translate-y: 0;
+    -fx-padding: 0 12 0 12;
+    -fx-alignment: center-left;
 }
 

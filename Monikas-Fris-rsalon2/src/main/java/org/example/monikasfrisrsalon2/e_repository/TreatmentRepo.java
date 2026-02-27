@@ -12,17 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TreatmentRepo {
-    public List<Treatment> initializeTreatment() throws SQLException {
+    public List<Treatment> loadTreatments() throws SQLException {
         List<Treatment> treatments = new ArrayList<>();
         String sql = "SELECT * FROM treatment";
 
-        Treatment treatment = null;
         try(Connection conn = DbConnect.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                treatment = createTreatmentFromResult(rs);
+                Treatment treatment = createTreatmentFromResult(rs);
                 treatments.add(treatment);
             }
         }catch (SQLException e) {

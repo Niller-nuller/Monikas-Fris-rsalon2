@@ -1,32 +1,39 @@
 package org.example.monikasfrisrsalon2.c_model;
 
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Booking {
+    private int id;
     private String name;
-    private int tlfNumber;
+    private String phoneNumber;
     private String email;
-    private DateTimeFormatter dateTime;
-    private Hairdresser hairdresserName;
-    private Timestamp availability;
+    private int duration;
+    private LocalDateTime dateTime;
+    private String hairdresserName;
+    private boolean availability;
     private TreatmentType treatment;
 
-    public Booking(String name, int tlfNumber, DateTimeFormatter dateTime, Hairdresser hairdresserName, Timestamp availability, TreatmentType treatment){
+
+
+    public Booking(int id, String name, String phoneNumber, String email, int duration, LocalDateTime dateTime,
+                   String hairdresserName, boolean availability, TreatmentType treatment) {
+        this.id = id;
         this.name = name;
-        this.tlfNumber = tlfNumber;
-        this.email = null;
-        this.dateTime = dateTime;
-        this.hairdresserName = hairdresserName;
-        this.availability = availability;
-        this.treatment = treatment;
-    }
-    public Booking(String name, String email, DateTimeFormatter dateTime, Hairdresser hairdresserName, Timestamp availability, TreatmentType treatment){
-        this.name = name;
-        this.tlfNumber = Integer.parseInt(null);
+        this.phoneNumber = phoneNumber;
         this.email = email;
-        this.dateTime = dateTime;
+        this.duration = duration;
         this.hairdresserName = hairdresserName;
+        this.dateTime = dateTime;
         this.availability = availability;
         this.treatment = treatment;
     }
+
+    public LocalDateTime getDateTime() { return dateTime; }
+    public String getName() { return name; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public String getEmail() { return email; }
+    public boolean getAvailability() { return availability; }
+    public String getHairdresser() { return hairdresserName; }
+    public TreatmentType getTreatment() { return treatment; }
 }
