@@ -12,9 +12,9 @@ import java.util.List;
 
 
 public class CustomerRepo {
-    public List<Customer> initializeCustomer() throws SQLException {
+    public List<Customer> loadCustomer() throws SQLException {
         List<Customer> Customers = new ArrayList<>();
-        String sql = "SELECT name, email, id FROM Customer";
+        String sql = "SELECT * FROM Customer";
 
         try (Connection conn = DbConnect.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -22,9 +22,7 @@ public class CustomerRepo {
 
             while (rs.next()) {
                 Customer customer = createCustomerFromResultset(rs);
-                if (customer != null) {
-                    Customers.add(customer);
-                }
+                Customers.add(customer);
             }
         } catch (SQLException e) {
             throw new RuntimeException("failed to initialize customers", e);
@@ -32,19 +30,22 @@ public class CustomerRepo {
         return Customers;
     }
     private Customer createCustomerFromResultset(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
         String name = rs.getString("name");
         String email = rs.getString("email");
-        int id = rs.getInt("id");
+        String phoneNumber = rs.getString("phonenumber");
 
-        return new Customer(name, email, id);
+        return new Customer(id,name,email,phoneNumber);
     }
-    public void insertCustomer(String Name, String Email) throws SQLException {
-        String sql = "INSERT INTO customer (Name, Email) VALUES (?,?)";
+
+
+    public void insertCustomer(String Name, String Email,String phoneNumber){
+        String sql = "INSERT INTO customer (Name, Email, phoneNumber) VALUES (?,?,?)";
         try(Connection conn = DbConnect.getConnection()){
-            try(PreparedStatement pstmt = conn.prepareStatement(sql)){
-                pstmt.setString(1,Name);
-                pstmt.setString(2,Email);
-                pstmt.executeUpdate();
+            try(PreparedStatement stmt = conn.prepareStatement(sql)){
+                stmt.setString(1,Name);
+                stmt.setString(2,Email);
+                stmt.executeUpdate();
             }
         } catch (SQLException e) {
             throw new RuntimeException("save failed", e);

@@ -1,9 +1,7 @@
 package org.example.monikasfrisrsalon2;
 
 import javafx.application.Application;
-import org.example.monikasfrisrsalon2.a_controller.HelloController;
 import org.example.monikasfrisrsalon2.b_service.Service;
-import org.example.monikasfrisrsalon2.c_model.Customer;
 import org.example.monikasfrisrsalon2.d_dbconfig.DbConnect;
 import org.example.monikasfrisrsalon2.e_repository.*;
 

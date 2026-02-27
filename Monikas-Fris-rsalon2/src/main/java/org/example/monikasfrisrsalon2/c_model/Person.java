@@ -4,13 +4,14 @@ public class Person {
     private int id;
     private String name;
     private String email;
-    private int phoneNumber;
+    private String phoneNumber;
 
-    public Person(String name, String email, int phoneNumber){
+    public Person(int id, String name, String email, String phoneNumber){
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
+
     public int getId(){
         return id;
     }
@@ -23,7 +24,7 @@ public class Person {
     public String getEmail(){
         return email;
     }
-    public int getPhoneNumber(){
+    public String getPhoneNumber(){
         return phoneNumber;
     }
 }

@@ -11,27 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HairDresserRepo {
-    public List<Hairdresser> initializeHairDresser() throws SQLException {
-        List<Hairdresser> haridressers = new ArrayList<>();
-        String sql = "SELECT id, name, time FROM Hairdresser"; //Time????
+
+    public List<Hairdresser> loadHairdressers() throws SQLException {
+        List<Hairdresser> hairdressers = new ArrayList<>();
+        String sql = "SELECT * FROM Hairdresser";
         try (Connection conn = DbConnect.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Hairdresser hairdresser = createHairdresserFromResultset(rs);
-                haridressers.add(hairdresser);
+                hairdressers.add(hairdresser);
             }
         } catch (SQLException e) {
             throw new RuntimeException("failed to initialize customers");
         }
-        return haridressers;
+        return hairdressers;
     }
     private Hairdresser createHairdresserFromResultset(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("name");
-        int time = rs.getInt("time");
+        String email = rs.getString("email");
+        String phoneNumber = rs.getString("phoneNumber");
 
-        return new Hairdresser(id, name, time);
+        return new Hairdresser(id, name, email, phoneNumber);
     }
 }
