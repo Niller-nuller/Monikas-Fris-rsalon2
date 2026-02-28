@@ -77,11 +77,12 @@ public class BookingController {
     @FXML
     public void initialize () {
         createActiveTableView();
-
         active_AppointmentsTable.setRowsPerPage(5);
-        active_AppointmentsTable.setItems(activeRows);
 
-        reloadActiveBookings();
+        // run after control is attached (safer with virtualized controls)
+        active_AppointmentsTable.sceneProperty().addListener((obs, old, scene) -> {
+            if (scene != null) Platform.runLater(this::reloadActiveBookings);
+        });
 
         /*
         createHistoryTableView();
@@ -170,8 +171,7 @@ public class BookingController {
 
             @Override
             public void update(AppointmentRow item) {
-                // HANDLERS
-                // btn.setOnAction(e -> inspect(item));
+                super.update(item);
             }
         };
     }
@@ -257,13 +257,13 @@ public class BookingController {
                 .map(this::toRow)
                 .toList();
 
-        activeRows.setAll(rows);
+        // IMPORTANT: new list instance each time
+        active_AppointmentsTable.setItems(FXCollections.observableArrayList(rows));
+
         active_AppointmentsTable.currentPageProperty().set(0);
 
-        var bookings = service.getActiveBookings();
-        for (Booking b : bookings){
-            System.out.println("Booking: " + b.getName() + " " + b.getDateTime());
-        }
+        System.out.println("rows=" + rows.size()
+                + " tableItems=" + active_AppointmentsTable.getItems().size());
     }
     /*
     private void reloadHistoryBookings() {
