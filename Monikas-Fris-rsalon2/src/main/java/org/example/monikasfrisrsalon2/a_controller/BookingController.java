@@ -8,6 +8,7 @@ import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -27,9 +28,12 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.example.monikasfrisrsalon2.b_service.Service;
 import org.example.monikasfrisrsalon2.c_model.Booking;
+import org.example.monikasfrisrsalon2.c_model.TreatmentType;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -42,15 +46,17 @@ public class BookingController {
 
     private final Service service;
 
-    public BookingController (Service service) {
+    public BookingController(Service service) {
         this.service = service;
     }
 
     private final ObservableList<AppointmentRow> activeRows = FXCollections.observableArrayList();
     private final ObservableList<AppointmentRow> historyRows = FXCollections.observableArrayList();
 
-    @FXML private MFXPaginatedTableView<AppointmentRow> active_AppointmentsTable;
-    @FXML private MFXPaginatedTableView<AppointmentRow> history_AppointmentsTable;
+    @FXML
+    private MFXPaginatedTableView<AppointmentRow> active_AppointmentsTable;
+    @FXML
+    private MFXPaginatedTableView<AppointmentRow> history_AppointmentsTable;
 
     private MFXTableColumn<AppointmentRow> timeCol;
     private MFXTableColumn<AppointmentRow> customerCol;
@@ -62,23 +68,30 @@ public class BookingController {
     private static final double ROW_H = 52;
     private static final double ACTION_BTN = 28;
 
-    @FXML private AnchorPane mainPane;
+    @FXML
+    private AnchorPane mainPane;
 
     // Create Customer Tab
-    @FXML private StackPane overlayForCreateCustomer;
-    @FXML private AnchorPane createCustomerTab;
+    @FXML
+    private StackPane overlayForCreateCustomer;
+    @FXML
+    private AnchorPane createCustomerTab;
 
-    @FXML private TextField nameField;
-    @FXML private TextField emailField;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField emailField;
     // Inspect Customer Tab
-    @FXML private StackPane overlayInspectCustomerTab;
-    @FXML private AnchorPane inspectCustomerTab;
+    @FXML
+    private StackPane overlayInspectCustomerTab;
+    @FXML
+    private AnchorPane inspectCustomerTab;
 
 
     //
 
     @FXML
-    public void initialize () {
+    public void initialize() {
         createActiveTableView();
         active_AppointmentsTable.setRowsPerPage(5);
 
@@ -149,8 +162,8 @@ public class BookingController {
         return cell;
     }
 
-    private MFXTableRowCell<AppointmentRow, String> centeredActionCell(String iconLiteral) {
-        return new MFXTableRowCell<AppointmentRow, String>(r -> "") {
+    private MFXTableRowCell<AppointmentRow, String> centeredActionCell(String iconLiteral, java.util.function.Consumer<AppointmentRow> action) {
+        return new MFXTableRowCell<>(r -> "") {
 
             private final MFXButton btn = new MFXButton();
             private final StackPane box = new StackPane(btn);
@@ -188,14 +201,18 @@ public class BookingController {
             @Override
             public void update(AppointmentRow item) {
                 super.update(item);
+                btn.setDisable(item == null);
+
                 btn.setOnAction(e -> {
+                    if (item != null) action.accept(item);
+                    e.consume();
                 });
             }
         };
     }
 
     ///  ACTIVE BOOKINGS - TABLE VIEW
-    private void createActiveTableView () {
+    private void createActiveTableView() {
         var fmt = DateTimeFormatter.ofPattern("dd-MM HH:mm");
 
         timeCol = new MFXTableColumn<>("Tid", true, Comparator.comparing(AppointmentRow::start));
@@ -203,13 +220,17 @@ public class BookingController {
         serviceCol = new MFXTableColumn<>("Behandling", true, Comparator.comparing(AppointmentRow::service));
         employeeCol = new MFXTableColumn<>("Medarbejder", true, Comparator.comparing(AppointmentRow::employee));
         inspectCol = new MFXTableColumn<>("Inspect", false, null);
-        deleteCol  = new MFXTableColumn<>("Delete",  false, null);
+        deleteCol = new MFXTableColumn<>("Delete", false, null);
 
-        inspectCol.setRowCellFactory(row -> centeredActionCell("far-address-card"));
-        deleteCol.setRowCellFactory(row -> centeredActionCell("far-window-close"));
+        inspectCol.setRowCellFactory(row -> centeredActionCell("far-address-card", this::onInspectRow));
+        deleteCol.setRowCellFactory(row -> centeredActionCell("far-window-close", this::onDeleteRow));
 
-        inspectCol.setMinWidth(60); inspectCol.setPrefWidth(60); inspectCol.setMaxWidth(60);
-        deleteCol.setMinWidth(60);  deleteCol.setPrefWidth(60);  deleteCol.setMaxWidth(60);
+        inspectCol.setMinWidth(60);
+        inspectCol.setPrefWidth(60);
+        inspectCol.setMaxWidth(60);
+        deleteCol.setMinWidth(60);
+        deleteCol.setPrefWidth(60);
+        deleteCol.setMaxWidth(60);
 
         active_AppointmentsTable.autosizeColumnsOnInitialization();
         active_AppointmentsTable.setTableRowFactory(item -> sizedRow(active_AppointmentsTable, item));
@@ -231,7 +252,7 @@ public class BookingController {
         System.out.println("CREATE ACTIVE TABLE RAN");
     }
 
-    private void createHistoryTableView () {
+    private void createHistoryTableView() {
         var fmt = DateTimeFormatter.ofPattern("dd-MM HH:mm");
 
         timeCol = new MFXTableColumn<>("Tid", true, Comparator.comparing(AppointmentRow::start));
@@ -240,9 +261,11 @@ public class BookingController {
         employeeCol = new MFXTableColumn<>("Medarbejder", true, Comparator.comparing(AppointmentRow::employee));
         inspectCol = new MFXTableColumn<>("Inspect", false, null);
 
-        inspectCol.setRowCellFactory(row -> centeredActionCell("far-address-card"));
+        inspectCol.setRowCellFactory(row -> centeredActionCell("far-address-card", this::onInspectRow));
 
-        inspectCol.setMinWidth(60); inspectCol.setPrefWidth(60); inspectCol.setMaxWidth(60);
+        inspectCol.setMinWidth(60);
+        inspectCol.setPrefWidth(60);
+        inspectCol.setMaxWidth(60);
 
         history_AppointmentsTable.autosizeColumnsOnInitialization();
         history_AppointmentsTable.setTableRowFactory(item -> sizedRow(history_AppointmentsTable, item));
@@ -261,6 +284,7 @@ public class BookingController {
 
         history_AppointmentsTable.setRowsPerPage(5);
     }
+
     private MFXTableRow<AppointmentRow> sizedRow(MFXPaginatedTableView<AppointmentRow> table, AppointmentRow item) {
         var row = new MFXTableRow<>(table, item);
         row.setMinHeight(ROW_H);
@@ -322,6 +346,7 @@ public class BookingController {
         mainPane.setDisable(true);
         overlayInspectCustomerTab.requestFocus();
     }
+
     @FXML
     private void closeInspectCustomerTab() {
         overlayInspectCustomerTab.setVisible(false);
@@ -343,13 +368,28 @@ public class BookingController {
                                 String tlf_number,
                                 LocalDateTime date,
                                 String hairdresserName,
-                                String treatmentType)
-    {
+                                TreatmentType treatmentType) {
         String customerName = name;
         String customerEmail = email;
         String customerTlfNumber = tlf_number;
         LocalDateTime customerDate = date;
         String customerHairdresserName = hairdresserName;
-        String customerTreatmentType = treatmentType;
+        TreatmentType customerTreatmentType = treatmentType;
     }
+
+    private void onInspectRow(AppointmentRow row) {
+        Booking b = row.booking();
+        setInspectData(b.getName(),b.getEmail(),b.getPhoneNumber(),b.getDateTime(),b.getHairdresser(),b.getTreatment());
+        inspectCustomerTab();
+    }
+
+    private void onDeleteRow(AppointmentRow row) {
+        Booking b = row.booking();
+        try {
+            service.cancelBooking(b);
+        } catch (SQLException e) {
+            System.out.println("Delete Fejl: " + e.getMessage());
+        }
+    }
+
 }

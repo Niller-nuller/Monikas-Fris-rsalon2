@@ -17,9 +17,12 @@ public class TopMenuController {
     private void goEarnings(ActionEvent event) throws IOException {
         SceneNavigator.switchTo(event, "Home.fxml");
     }
-
     @FXML
-    private void goSettings(ActionEvent event) throws IOException {
-        SceneNavigator.switchTo(event, "Settings.fxml");
+    private void logOut (ActionEvent event) {
+        try{
+            SceneNavigator.switchTo(event, "/org/example/monikasfrisrsalon2/Login.fxml");} catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 }

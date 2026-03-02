@@ -11,29 +11,31 @@ public class Booking {
     private int duration;
     private LocalDateTime dateTime;
     private String hairdresserName;
-    private boolean availability;
     private TreatmentType treatment;
+    private Status status;
 
 
 
-    public Booking(int id, String name, String phoneNumber, String email, int duration, LocalDateTime dateTime,
-                   String hairdresserName, boolean availability, TreatmentType treatment) {
+    public Booking(int id, String name, String phoneNumber, String email,TreatmentType treatment, int duration, LocalDateTime dateTime,
+                   String hairdresserName,Status status) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.treatment = treatment;
         this.duration = duration;
         this.hairdresserName = hairdresserName;
         this.dateTime = dateTime;
-        this.availability = availability;
-        this.treatment = treatment;
-    }
+        this.status = status;
 
+    }
+    public int getId() {
+        return id;
+    }
     public LocalDateTime getDateTime() { return dateTime; }
     public String getName() { return name; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getEmail() { return email; }
-    public boolean getAvailability() { return availability; }
     public String getHairdresser() { return hairdresserName; }
     public TreatmentType getTreatment() { return treatment; }
 }
