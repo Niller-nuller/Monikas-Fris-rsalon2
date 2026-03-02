@@ -56,8 +56,19 @@ public final class SceneNavigator {
         Stage stage = (Stage) ((Node) event.getSource())
                 .getScene()
                 .getWindow();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root,1920,1080);
         stage.setScene(scene);
+        stage.show();
+        Platform.runLater(() -> {
+            stage.toFront();
+            stage.requestFocus();
+        });
+    }
+    public static void switchTo(Stage stage, String fxmlName) throws IOException {
+        FXMLLoader loader = createLoader(fxmlName);
+        Parent root = loader.load();
+        root.localToScreen(1920,1080);
+        stage.setScene(new Scene(root));
         stage.show();
         Platform.runLater(() -> {
             stage.toFront();

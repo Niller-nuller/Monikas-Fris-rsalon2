@@ -1,23 +1,37 @@
 package org.example.monikasfrisrsalon2.c_model;
 
 public class Operator {
-    private int id;
     private String username;
     private String password;
+    private String role;
 
-    public Operator(int id, String username){
-        this.id = id;
-        this.username = username;
-    }
-    public Operator(String username,String password){
+    public Operator(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public String getUsername(){
-        return this.username;
+    public Operator( String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
-    public String getPassword(){
-        return this.password;
+    public String getUsername() {
+        return username;
     }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }
