@@ -25,7 +25,12 @@
                     rowsPerPage="6"
                     styleClass="appointments-table"/>
             <Label alignment="CENTER" layoutX="820.0" layoutY="50.0" prefHeight="50.0" prefWidth="300.0" styleClass="title" text="Oversigt" />
-            <MFXButton layoutX="520" layoutY="100" prefHeight="50" prefWidth="175" style="-fx-border-radius: 0" styleClass="ghost" text="    Opret bestilling" onAction="#openPopup">
+            <MFXButton layoutX="520" layoutY="100" prefHeight="50" prefWidth="175" style="-fx-border-radius: 0" styleClass="ghost" text="    Opret bestilling" onAction="#openCreateCustomerTab">
+                <graphic>
+                    <FontIcon iconColor="white" iconLiteral="far-calendar-plus" iconSize="22" />
+                </graphic>
+            </MFXButton>
+            <MFXButton layoutX="720" layoutY="100" prefHeight="50" prefWidth="175" style="-fx-border-radius: 0" styleClass="ghost" text="    Vis Kunde" onAction="#inspectCustomerTab">
                 <graphic>
                     <FontIcon iconColor="white" iconLiteral="far-calendar-plus" iconSize="22" />
                 </graphic>
@@ -33,11 +38,11 @@
         </children>
     </AnchorPane>
 
-    <StackPane fx:id="overlay" visible="false" managed="false"
+    <StackPane fx:id="overlayForCreateCustomer" visible="false" managed="false"
                style="-fx-background-color: rgba(0,0,0,0.35);">
 
         <!-- The popup itself -->
-        <AnchorPane fx:id="popup" prefWidth="420" prefHeight="260"
+        <AnchorPane fx:id="createCustomerTab" prefWidth="420" prefHeight="260"
                     style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.2, 0, 6);">
 
             <Label text="Create customer" style="-fx-font-size: 18; -fx-font-weight: bold;"
@@ -49,8 +54,23 @@
             <Label text="Email" layoutX="16" layoutY="120"/>
             <TextField fx:id="emailField" layoutX="16" layoutY="140" prefWidth="388"/>
 
-            <Button text="Cancel" onAction="#closePopup" layoutX="240" layoutY="200"/>
+            <Button text="Cancel" onAction="#closeCreateCustomerTab" layoutX="240" layoutY="200"/>
             <Button text="Save" onAction="#savePopup" layoutX="320" layoutY="200" defaultButton="true"/>
+        </AnchorPane>
+    </StackPane>
+
+    <StackPane fx:id="overlayInspectCustomerTab" visible="false" managed="false"
+               style="-fx-background-color: rgba(0,0,0,0.35);">
+        <AnchorPane fx:id="inspectCustomerTab" prefWidth="600" prefHeight="400"
+                    style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.2, 0, 6);">
+            <Label text="Kunde navn: " layoutX="16" layoutY="50"/>
+            <Label text="" layoutX="50" layoutY="50"/>
+            <Label text="Tlf nummer: " layoutX="16" layoutY="75"/>
+            <Label text="" layoutX="50" layoutY="75"/>
+            <Label text="Email: " layoutX="16" layoutY="100"/>
+            <Label text="" layoutX="50" layoutY="100"/>
+            <Label text="Tid: " layoutX="16" layoutY="125"/>
+            <Label text="" layoutX="50" layoutY="125"/>
         </AnchorPane>
     </StackPane>
 </StackPane>
