@@ -2,97 +2,79 @@ package org.example.monikasfrisrsalon2.b_service;
 
 import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
+import jdk.jfr.Timespan;
 import org.example.monikasfrisrsalon2.c_model.*;
 import org.example.monikasfrisrsalon2.e_repository.*;
 
+import java.io.IOException;
+import java.security.spec.ECField;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Service {
-private final BookingRepo bookingRepo;
-private final CustomerRepo customerRepo;
-private final HairDresserRepo hairDresserRepo;
-private final TreatmentRepo treatmentRepo;
-private final OperatorRepo operatorRepo;
+    private final BookingRepo bookingRepo;
+    private final CustomerRepo customerRepo;
+    private final HairDresserRepo hairDresserRepo;
+    private final TreatmentRepo treatmentRepo;
+    private OperatorRepo operatorRepo;
 
-private Operator operator_in_use;
+    private Operator operator;
 
-    public Service(BookingRepo bookingRepo,CustomerRepo customerRepo,HairDresserRepo hairDresserRepo,TreatmentRepo treatmentRepo, OperatorRepo operatorRepo) throws SQLException {
+    public Service(BookingRepo bookingRepo, CustomerRepo customerRepo, HairDresserRepo hairDresserRepo, TreatmentRepo treatmentRepo, OperatorRepo operatorRepo) {
         this.bookingRepo = bookingRepo;
         this.customerRepo = customerRepo;
         this.hairDresserRepo = hairDresserRepo;
         this.treatmentRepo = treatmentRepo;
         this.operatorRepo = operatorRepo;
-        populateTreatmentRegistry();
+
     }
-    private final Map<TreatmentType, Treatment> treatmentRegistry = new HashMap<>();
-    private final List<Customer> customerRegistry = new ArrayList<>();
-    private final List<Hairdresser> hairdresserRegistry = new ArrayList<>();
-    private final List<Booking> bookingRegistry = new ArrayList<>();
 
-    //---------------Treatment Control----------------------------------------------------------------------------------
-
-    private void populateTreatmentRegistry() throws SQLException {
-        for(Treatment t : treatmentRepo.initializeTreatment()){
-            treatmentRegistry.put(t.getType(), t);
+    //--------------- Control----------------------------------------------------------------------------------
+    public Boolean serviceLogin(String username, String password){
+        validateOperator(username, password);
+        Operator operator = createOperator(username,password);
+//        operator = operatorRepo.authenticateOperator(operator);
+        setOperatorlogin(operator);
+        return false;
+    }
+    public void setOperatorlogin(Operator operator){
+        this.operator = operator;
+    }
+    public void setOperatorlogout(){
+       // operator
+    }
+    private Operator createOperator(String username, String password){
+        return new Operator(username, password);
+    }
+    private void validateOperator(String username, String password){
+        if(username.isBlank() | username.isEmpty()){
+            throw new IllegalArgumentException("The username is empty");
+        }
+        if(password.isEmpty() | password.isBlank()){
+            throw new IllegalArgumentException("No password has been typed in");
         }
     }
-    public Treatment getTreatment(TreatmentType type){
-        return treatmentRegistry.get(type);
-    }
-    public List<Treatment> getAllTreatments(){
-        return new ArrayList<>(treatmentRegistry.values());
-    }
-
-//----------------Customer Control--------------------------------------------------------------------------------------
-    public void populateCustomerRegistry() throws SQLException {
-        customerRegistry.addAll(customerRepo.initializeCustomer());
-    }
-    public Customer getCustomer(String name){
-        for(Customer c : customerRegistry){
-            if(Objects.equals(name, c.getName())){
-                return c;
-            }
-        }
-        return null;
-    }
-    public List<Customer> getCustomerList(){
-        return customerRegistry;
-    }
-
-//--------------Hairdresser Control-------------------------------------------------------------------------------------
-
-    public void populateHairdresserRegistry() throws SQLException {
-        hairdresserRegistry.addAll(hairDresserRepo.initializeHairDresser());
-    }
-    public Hairdresser getHairdresser(String name){
-        for(Hairdresser h : hairdresserRegistry){
-            if(h.getName().equals(name)){
-                return h;
-            }
-        }
-        return null;
-    }
-    public List<Hairdresser> getHairdresserList(){
-        return hairdresserRegistry;
-    }
-
-//---------------Booking Control----------------------------------------------------------------------------------------
-
-    public void populateBookingRegistry() throws SQLException {
-        bookingRegistry.addAll(bookingRepo.initializeBooking());
-    }
-
 
     //Login-------------------------------------------------------------------------------------------------------------
-
-    public boolean verifyLogin(String username, String password){
-        for (Operator operator : operatorRepo.initializeOperators()){
-            if (username.equals(operator.getUsername()) && password.equals((operator.getPassword()))){
-                operator = operator_in_use;
-                return true;
+    public boolean verifyLogin(String username, String password) throws Exception {
+            if (username == null || username.isBlank()) {
+                throw new IllegalArgumentException("Username cannot be empty");
             }
-        }
-        return false;
+            if (password == null || password.isBlank()) {
+                throw new IllegalArgumentException("Password connot be empty");
+            }
+            return operatorRepo.login(username, password);
+    }
+
+
+    // TEST
+
+    public List<Booking> getActiveBookings() {
+        System.out.println("GET ACTIVE BOOKINGS ACTIVATED");
+        List<Booking> aBookings = new ArrayList<>();
+        LocalDateTime lDate = LocalDateTime.of(2026, 02, 27, 14, 30);
+        aBookings.add(new Booking(1, "Jonas", "23907290", "Hej@gmail.com",45,lDate, "Betina", true, TreatmentType.MandCut ));
+        return aBookings;
     }
 }

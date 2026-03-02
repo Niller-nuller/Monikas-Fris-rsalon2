@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<?import javafx.scene.paint.Color?>
+<AnchorPane prefHeight="700" styleClass="ghost" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikasfrisrsalon2.a_controller.TopMenuController">
+    <Label layoutX="10" layoutY="50">
+        <graphic>
+            <FontIcon iconLiteral="far-user" iconSize="24" iconColor="white" />
+        </graphic>
+    </Label>
+    <Label layoutX="50" layoutY="55" styleClass="label-small" text="Jonas" />
+    <VBox layoutX="5" layoutY="100" prefHeight="600" prefWidth="250" spacing="10" styleClass="ghost">
+        <children>
+            <MFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goHome" prefHeight="75.0" styleClass="ghost" text="Bookings" VBox.vgrow="ALWAYS" />
+            <MFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goEarnings" prefHeight="75.0" styleClass="ghost" text="Kalender" VBox.Vgrow="ALWAYS" />
+            <MFXButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goSettings" prefHeight="75.0" styleClass="ghost" text="Log ud" VBox.Vgrow="ALWAYS" />
+        </children>
+    </VBox>
+    <Line startX="260.0" endX="260" startY="25" endY="1055" style="-fx-stroke: rgba(216, 222, 233, 0.35)"/>
+    <Line startX="10" endX="250" startY="85" endY="85" style="-fx-stroke: rgba(216, 222, 233, 0.35)"/>
+</AnchorPane>

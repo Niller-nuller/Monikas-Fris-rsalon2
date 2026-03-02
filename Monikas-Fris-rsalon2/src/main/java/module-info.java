@@ -8,6 +8,8 @@ module org.example.monikasfrisrsalon2 {
     requires MaterialFX;
     requires org.kordamp.ikonli.core;
     requires jdk.compiler;
+    requires jdk.jfr;
+    requires jbcrypt;
 
     opens org.example.monikasfrisrsalon2 to javafx.fxml;
     exports org.example.monikasfrisrsalon2;
