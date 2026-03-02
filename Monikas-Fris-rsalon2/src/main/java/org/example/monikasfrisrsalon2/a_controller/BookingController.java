@@ -62,14 +62,17 @@ public class BookingController {
     private static final double ROW_H = 52;
     private static final double ACTION_BTN = 28;
 
-    // NEW
-
     @FXML private AnchorPane mainPane;
-    @FXML private StackPane overlay;
-    @FXML private AnchorPane popup;
+
+    // Create Customer Tab
+    @FXML private StackPane overlayForCreateCustomer;
+    @FXML private AnchorPane createCustomerTab;
 
     @FXML private TextField nameField;
     @FXML private TextField emailField;
+    // Inspect Customer Tab
+    @FXML private StackPane overlayInspectCustomerTab;
+    @FXML private AnchorPane inspectCustomerTab;
 
 
     //
@@ -91,19 +94,31 @@ public class BookingController {
          */
 
         // NEW
-        overlay.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-            if (e.getTarget() == overlay) closePopup();
+        overlayForCreateCustomer.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getTarget() == overlayForCreateCustomer) closeCreateCustomerTab();
         });
 
-        overlay.setOnKeyPressed(e -> {
+        overlayForCreateCustomer.setOnKeyPressed(e -> {
             switch (e.getCode()) {
-                case ESCAPE -> closePopup();
+                case ESCAPE -> closeCreateCustomerTab();
             }
         });
-        overlay.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        overlayForCreateCustomer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
+        overlayInspectCustomerTab.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getTarget() == overlayInspectCustomerTab) closeInspectCustomerTab();
+        });
+
+        overlayInspectCustomerTab.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case ESCAPE -> closeInspectCustomerTab();
+            }
+        });
+        overlayInspectCustomerTab.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
     }
 
     public record AppointmentRow(
+            Booking booking,
             String customer,
             String service,
             String employee,
@@ -114,6 +129,7 @@ public class BookingController {
 
     private AppointmentRow toRow(Booking b) {
         return new AppointmentRow(
+                b,
                 b.getName(),
                 String.valueOf(b.getTreatment()),
                 b.getHairdresser(),
@@ -172,6 +188,8 @@ public class BookingController {
             @Override
             public void update(AppointmentRow item) {
                 super.update(item);
+                btn.setOnAction(e -> {
+                });
             }
         };
     }
@@ -280,9 +298,9 @@ public class BookingController {
     // NEW
 
     @FXML
-    private void openPopup() {
-        overlay.setManaged(true);
-        overlay.setVisible(true);
+    private void openCreateCustomerTab() {
+        overlayForCreateCustomer.setManaged(true);
+        overlayForCreateCustomer.setVisible(true);
 
         mainPane.setDisable(true);
 
@@ -290,10 +308,24 @@ public class BookingController {
     }
 
     @FXML
-    private void closePopup() {
-        overlay.setVisible(false);
-        overlay.setManaged(false);
+    private void closeCreateCustomerTab() {
+        overlayForCreateCustomer.setVisible(false);
+        overlayForCreateCustomer.setManaged(false);
 
+        mainPane.setDisable(false);
+    }
+
+    @FXML
+    private void inspectCustomerTab() {
+        overlayInspectCustomerTab.setManaged(true);
+        overlayInspectCustomerTab.setVisible(true);
+        mainPane.setDisable(true);
+        overlayInspectCustomerTab.requestFocus();
+    }
+    @FXML
+    private void closeInspectCustomerTab() {
+        overlayInspectCustomerTab.setVisible(false);
+        overlayInspectCustomerTab.setManaged(false);
         mainPane.setDisable(false);
     }
 
@@ -302,6 +334,22 @@ public class BookingController {
 
         // TODO: POPUP_LOGIC: BOOKING
 
-        closePopup();
+        closeCreateCustomerTab();
+    }
+
+    @FXML
+    private void setInspectData(String name,
+                                String email,
+                                String tlf_number,
+                                LocalDateTime date,
+                                String hairdresserName,
+                                String treatmentType)
+    {
+        String customerName = name;
+        String customerEmail = email;
+        String customerTlfNumber = tlf_number;
+        LocalDateTime customerDate = date;
+        String customerHairdresserName = hairdresserName;
+        String customerTreatmentType = treatmentType;
     }
 }

@@ -50,6 +50,7 @@ public class HelloApplication extends Application {
         Parent root = fxmlLoader.load();
 
         stage.setScene(new Scene(root));
+        stage.sizeToScene();
         stage.show();
     }
 }
