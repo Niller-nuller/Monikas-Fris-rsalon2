@@ -10,6 +10,8 @@ module org.example.monikasfrisrsalon2 {
     requires jdk.compiler;
     requires jdk.jfr;
     requires jbcrypt;
+    requires javafx.base;
+    requires javafx.graphics;
 
     opens org.example.monikasfrisrsalon2 to javafx.fxml;
     exports org.example.monikasfrisrsalon2;

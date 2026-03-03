@@ -58,10 +58,16 @@ public class LoginController {
         }
     }
     @FXML
-    private void handleRegistry() {
-
+    private void onRegisterButtonClick(ActionEvent event) {
+        try{
+        SceneNavigator.switchTo(event, "/org/example/monikasfrisrsalon2/Register.fxml");}
+        catch(IOException e){
+            errorLabel.setText("IO error");
+            errorLabel.setOpacity(1);
+            updateHUD(event);
+            e.printStackTrace();
+        }
     }
-
     private void updateHUD(ActionEvent event) {
         usernameTextfield.clear();
         passwordfield.clear();

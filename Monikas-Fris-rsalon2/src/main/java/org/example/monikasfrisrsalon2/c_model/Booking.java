@@ -27,7 +27,6 @@ public class Booking {
         this.hairdresserName = hairdresserName;
         this.dateTime = dateTime;
         this.status = status;
-
     }
     public int getId() {
         return id;

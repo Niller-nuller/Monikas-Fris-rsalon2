@@ -14,6 +14,7 @@ public class ServiceLogin {
     public ServiceLogin (OperatorRepository operatorRepository){
         this.operatorRepo = operatorRepository;
     }
+    //Register--------------------------------------------------------------------------------------------
     public Operator createOperator(String Username, String Password){
         return new Operator(
                 Username, Password
@@ -25,21 +26,21 @@ public class ServiceLogin {
             throw e;
         }
     }
+    //login----------------------------------------------------------------------------------------------
     public boolean login(Operator loginRequest) throws SQLException {
-        Operator dbOperator = operatorRepo.findByUsername(loginRequest.getUsername());
-        if (dbOperator != null && BCrypt.checkpw(loginRequest.getPassword(), dbOperator.getPassword())) {
-            dbOperator.setPassword(null);
-            this.currentOperator =  dbOperator;
-            return true;
+        try {
+            Operator dbOperator = operatorRepo.loginOperator(loginRequest);
+            if( dbOperator != null){
+                currentOperator = dbOperator;
+                return true;
+            }
+        } catch (Exception e) {
+            throw e;
         }
         return false;
     }
-    public void logOut(Operator operator) throws SQLException {
-        operator.setPassword(null);
-    }
-
+    //Booking stuff-------------------------------------------------------------------------
     public Operator getOperator(){
         return currentOperator;
     }
-
 }

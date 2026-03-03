@@ -36,10 +36,11 @@ public class Service {
     //--------------- Control----------------------------------------------------------------------------------
 
     public List<Booking> handleGetPendingBookings(LocalDate date) throws SQLException {
-        return bookingRepo.getBookingListBasedOnStatus(Status.Pending, date);
+        //return bookingRepo.getBookingListBasedOnStatus(Status.Pending, date);
+        return null;
     }
     public void cancelBooking(Booking booking) throws SQLException {
-        bookingRepo.chancelBooking(booking);
+        //bookingRepo.chancelBooking(booking);
     }
 
     // TEST
