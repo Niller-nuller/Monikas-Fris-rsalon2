@@ -35,6 +35,7 @@ public class OperatorRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, loginRequest.getUsername());
+            stmt.setString(2, loginRequest.getPassword());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
