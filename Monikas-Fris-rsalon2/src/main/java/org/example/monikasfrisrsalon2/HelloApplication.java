@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.example.monikasfrisrsalon2.a_controller.BookingController;
 import org.example.monikasfrisrsalon2.a_controller.LoginController;
+import org.example.monikasfrisrsalon2.a_controller.RegisterController;
 import org.example.monikasfrisrsalon2.a_controller.SceneNavigator;
 import org.example.monikasfrisrsalon2.b_service.Service;
 import org.example.monikasfrisrsalon2.b_service.ServiceLogin;
@@ -48,6 +49,7 @@ public class HelloApplication extends Application {
         Callback<Class<?>, Object> factory = type -> {
             if (type == BookingController.class) return new BookingController(service);
             if (type == LoginController.class) return new LoginController(serviceLogin);
+            if (type == RegisterController.class) return new RegisterController(serviceLogin);
             try {
                 return type.getDeclaredConstructor().newInstance();
             } catch (Exception e) {

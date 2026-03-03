@@ -17,12 +17,15 @@ public class OperatorRepository {
 
         String sql = "insert into operators (username, password_hash, role) values (?, ?, ?)";
 
+
         try (Connection conn = DbConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, operator.getUsername());
             stmt.setString(2, hashedPassword);
-            stmt.setString(3, operator.getRole());
+            stmt.setString(3, "role");
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
         }
 
     }

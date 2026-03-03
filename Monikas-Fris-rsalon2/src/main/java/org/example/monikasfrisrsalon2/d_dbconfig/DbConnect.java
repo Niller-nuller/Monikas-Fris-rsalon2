@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbConnect{
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException{
         Properties prop = new Properties();
         try (FileInputStream inputStream = new FileInputStream(".env")) {
             prop.load(inputStream);
@@ -26,6 +26,7 @@ public class DbConnect{
         } catch (SQLException e){
             System.out.println("failed to connect to database");
             e.printStackTrace();
+            throw e;
         }
         return conn;
     }
