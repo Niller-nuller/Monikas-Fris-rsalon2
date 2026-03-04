@@ -15,10 +15,13 @@ public class ServiceLogin {
         this.operatorRepo = operatorRepository;
     }
     //Register--------------------------------------------------------------------------------------------
-    public Operator createOperator(String Username, String Password){
+    public Operator createOperator(String Username, String Password, String role){
         return new Operator(
-                Username, Password
+                Username, Password, role
         );
+    }
+    public Operator createOperator(String Username, String Password){
+        return new Operator(Username, Password);
     }
     public void createOperator(Operator newOperator) throws SQLException{
         try{

@@ -1,14 +1,9 @@
 package org.example.monikasfrisrsalon2.b_service;
 
-import javafx.collections.ObservableArray;
-import javafx.collections.ObservableList;
-import jdk.jfr.Timespan;
+
 import org.example.monikasfrisrsalon2.c_model.*;
 import org.example.monikasfrisrsalon2.e_repository.*;
-import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.IOException;
-import java.security.spec.ECField;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +18,8 @@ public class Service {
     private final ServiceLogin serviceLogin;
 
     Operator currentOperator;
+
+    List<Hairdresser> hairdressers = new ArrayList<>();
     
     public Service(BookingRepo bookingRepo, CustomerRepo customerRepo, HairDresserRepo hairDresserRepo, TreatmentRepo treatmentRepo, OperatorRepository operatorRepo, ServiceLogin serviceLogin) {
         this.bookingRepo = bookingRepo;
@@ -33,7 +30,18 @@ public class Service {
         this.serviceLogin = serviceLogin;
     }
 
+    public void initialize(){
+        getOperator();
+        populateHairdressers();
+    }
     //--------------- Control----------------------------------------------------------------------------------
+
+    public void populateHairdressers(){
+        try{
+        hairdressers = hairDresserRepo.loadHairdressers();}catch(Exception e){
+            System.out.println("SQL problem");
+        }
+    }
 
     public List<Booking> handleGetPendingBookings(LocalDate date) throws SQLException {
         //return bookingRepo.getBookingListBasedOnStatus(Status.Pending, date);
@@ -55,5 +63,35 @@ public class Service {
     
     public void getOperator(){
         this.currentOperator = serviceLogin.getOperator();
+    }
+
+    public void createBooking(Customer customer, Hairdresser hairdresser, TreatmentType treatmentType) throws SQLException {
+        LocalDateTime dateTime = LocalDateTime.now();
+        try{
+        bookingRepo.createABooking(customer, hairdresser, getTreatment(treatmentType), dateTime);} catch(Exception e){
+            throw e;
+        }
+    }
+
+    public Customer createCustomer(int id, String name, String email, String phoneNumber){
+        return new Customer(id, name, email, phoneNumber);
+    }
+    public Treatment getTreatment(TreatmentType treatmentType){
+        TreatmentRegistry treatmentRegistry = new TreatmentRegistry();
+        Treatment treatment = treatmentRegistry.getDefinition(treatmentType);
+        return treatment;
+    }
+    public LocalDateTime getBookingTime(int year, int month, int day, int hour){
+        LocalDateTime startTime = LocalDateTime.of(year, month, day, hour, 0);
+        return startTime;
+    }
+
+    public Hairdresser getHairdresser(String name){
+        for(Hairdresser hairdresser : hairdressers){
+            if(hairdresser.getName().equals(name)){
+                return hairdresser;
+            }
+        }
+        return null;
     }
 }

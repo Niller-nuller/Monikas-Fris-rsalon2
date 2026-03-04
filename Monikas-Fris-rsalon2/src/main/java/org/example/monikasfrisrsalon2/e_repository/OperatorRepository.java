@@ -22,7 +22,7 @@ public class OperatorRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, operator.getUsername());
             stmt.setString(2, hashedPassword);
-            stmt.setString(3, "role");
+            stmt.setString(3, operator.getRole());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw e;
@@ -30,23 +30,27 @@ public class OperatorRepository {
 
     }
     public Operator loginOperator (Operator loginRequest) throws SQLException {
-        String sql = "select username, role from operators where username = ? and password_hash IS NOT NULL";
+        String sql = "select id, username, password_hash, role from operators where username = ?";
         try (Connection conn = DbConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, loginRequest.getUsername());
-            stmt.setString(2, loginRequest.getPassword());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new Operator(
-                        rs.getString("username"),
-                        null,
-                        rs.getString("role")
-                );
+                String storedHash = rs.getString("password_hash");
+                if (BCrypt.checkpw(loginRequest.getPassword(), storedHash)) {
+
+                    return new Operator(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            null,
+                            rs.getString("role")
+                    );
+                }
             }
+            return null;
         }
-        return null;
     }
     public Operator findByUsername (String username) throws SQLException {
         String sql = "select id , username, password_hash, role from operators where username = ?";
@@ -57,6 +61,7 @@ public class OperatorRepository {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Operator(
+                        rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password_hash"),
                         rs.getString("role")

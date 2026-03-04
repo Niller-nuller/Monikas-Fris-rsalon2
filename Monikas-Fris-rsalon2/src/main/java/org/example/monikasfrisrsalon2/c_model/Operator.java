@@ -1,16 +1,21 @@
 package org.example.monikasfrisrsalon2.c_model;
 
 public class Operator {
+    private int id;
     private String username;
     private String password;
     private String role;
-
-    public Operator(String username, String password) {
+public Operator(String username, String password){
+    this.username=username;
+    this.password=password;
+}
+    public Operator( String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
-
-    public Operator( String username, String password, String role) {
+    public Operator( int id, String username, String password, String role) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -32,6 +37,12 @@ public class Operator {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
 }

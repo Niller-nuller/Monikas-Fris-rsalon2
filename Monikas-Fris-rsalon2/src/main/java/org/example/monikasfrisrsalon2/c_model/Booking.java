@@ -9,7 +9,7 @@ public class Booking {
     private String phoneNumber;
     private String email;
     private int duration;
-    private LocalDateTime dateTime;
+    private LocalDateTime BookingTime;
     private String hairdresserName;
     private TreatmentType treatment;
     private Status status;
@@ -25,13 +25,13 @@ public class Booking {
         this.treatment = treatment;
         this.duration = duration;
         this.hairdresserName = hairdresserName;
-        this.dateTime = dateTime;
+        this.BookingTime = dateTime;
         this.status = status;
     }
     public int getId() {
         return id;
     }
-    public LocalDateTime getDateTime() { return dateTime; }
+    public LocalDateTime getDateTime() { return BookingTime; }
     public String getName() { return name; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getEmail() { return email; }
