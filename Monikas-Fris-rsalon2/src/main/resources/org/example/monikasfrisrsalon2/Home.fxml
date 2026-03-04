@@ -57,7 +57,7 @@
 
                 <HBox spacing="18">
 
-                    <!-- LEFT: Customer info -->
+
                     <VBox spacing="10" prefWidth="280">
                         <Label text="Kunde information" style="-fx-font-weight: bold;"/>
 
@@ -73,7 +73,7 @@
 
                     <Separator orientation="VERTICAL"/>
 
-                    <!-- RIGHT: Wizard -->
+
                     <VBox spacing="12" prefWidth="560">
 
                         <HBox spacing="10" alignment="CENTER_LEFT">
@@ -81,19 +81,19 @@
                             <DatePicker fx:id="bookingDatePicker"/>
                         </HBox>
 
-                        <!-- Step 1: Treatments -->
+
                         <VBox fx:id="treatmentSection" spacing="8">
                             <Label text="Vælg behandling" style="-fx-font-weight: bold;"/>
                             <FlowPane fx:id="treatmentPane" hgap="10" vgap="10" prefWrapLength="520"/>
                         </VBox>
 
-                        <!-- Step 2: Hairdressers (hidden until treatment selected) -->
+
                         <VBox fx:id="hairdresserSection" spacing="8" visible="false" managed="false">
                             <Label text="Vælg medarbejder" style="-fx-font-weight: bold;"/>
                             <FlowPane fx:id="hairdresserPane" hgap="10" vgap="10" prefWrapLength="520"/>
                         </VBox>
 
-                        <!-- Step 3: Slots (hidden until hairdresser selected) -->
+
                         <VBox fx:id="slotSection" spacing="8" visible="false" managed="false">
                             <Label text="Vælg tid" style="-fx-font-weight: bold;"/>
                             <FlowPane fx:id="slotPane" hgap="10" vgap="10" prefWrapLength="520"/>

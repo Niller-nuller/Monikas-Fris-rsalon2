@@ -5,6 +5,7 @@ import org.example.monikasfrisrsalon2.c_model.*;
 import org.example.monikasfrisrsalon2.e_repository.*;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,6 +36,22 @@ public class Service {
         populateHairdressers();
     }
     //--------------- Control----------------------------------------------------------------------------------
+    public List<Booking> getAllBookings(){
+        try {
+            return bookingRepo.loadAllBookings();
+        }catch(SQLException e){
+            System.out.println("Could not load all bookings");
+            throw new RuntimeException("Could not load all bookings");
+        }
+    }
+    public List<Booking> handleGetPendingBookings(LocalDate date){
+        try {
+            return bookingRepo.getBookingListBasedOnStatus(Status.Pending, date);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());//PRETEND IT WRITES TO A LOG!!
+            throw new RuntimeException("Could connect to database.");
+        }
+    }
 
     public void populateHairdressers(){
         try{
@@ -44,10 +61,6 @@ public class Service {
         }
     }
 
-    public List<Booking> handleGetPendingBookings(LocalDate date) throws SQLException {
-        //return bookingRepo.getBookingListBasedOnStatus(Status.Pending, date);
-        return null;
-    }
     public void cancelBooking(Booking booking) throws SQLException {
         //bookingRepo.chancelBooking(booking);
     }
@@ -120,7 +133,11 @@ public class Service {
 
     public void createBooking(String name, String email, String phone,
                               Treatment treatment, Hairdresser hairdresser, LocalDateTime start) throws SQLException {
+
+        Operator op = serviceLogin.getOperator();
+        if (op == null) throw new IllegalStateException("No operator logged in");
+
         Customer customer = customerRepo.upsertCustomer(name, email, phone);
-        bookingRepo.createABooking(customer, hairdresser, treatment, start);
+        bookingRepo.createABooking(customer, hairdresser, treatment, start, op.getId());
     }
 }
