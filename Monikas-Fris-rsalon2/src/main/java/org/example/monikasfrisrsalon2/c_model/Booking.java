@@ -37,4 +37,5 @@ public class Booking {
     public String getEmail() { return email; }
     public String getHairdresser() { return hairdresserName; }
     public String getTreatment() { return treatmentName; }
+    public Status getStatus() { return status; }
 }

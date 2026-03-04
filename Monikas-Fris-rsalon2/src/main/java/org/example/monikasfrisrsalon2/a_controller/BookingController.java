@@ -18,9 +18,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.example.monikasfrisrsalon2.b_service.Service;
 import org.example.monikasfrisrsalon2.c_model.Booking;
+import org.example.monikasfrisrsalon2.c_model.Operator;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -45,6 +47,7 @@ public class BookingController {
     private org.example.monikasfrisrsalon2.c_model.Treatment selectedTreatment;
     private org.example.monikasfrisrsalon2.c_model.Hairdresser selectedHairdresser;
     private LocalDateTime selectedStartTime;
+    private Operator operatorId;
 
     private MFXTableColumn<AppointmentRow> timeCol;
     private MFXTableColumn<AppointmentRow> customerCol;
@@ -300,19 +303,22 @@ public class BookingController {
         return row;
     }
 
-    private void reloadActiveBookings() {
-        var rows = service.getActiveBookings()
-                .stream()
-                .map(this::toRow)
-                .toList();
+    private void reloadActiveBookings(){
+        try {
+            var rows = service.getAllBookings()
+                    .stream()
+                    .map(this::toRow)
+                    .toList();
 
-        // IMPORTANT: new list instance each time
         active_AppointmentsTable.setItems(FXCollections.observableArrayList(rows));
 
         active_AppointmentsTable.currentPageProperty().set(0);
 
         System.out.println("rows=" + rows.size()
                 + " tableItems=" + active_AppointmentsTable.getItems().size());
+        } catch (RuntimeException e) {
+            System.out.println("Error loading active bookings");
+        }
     }
     /*
     private void reloadHistoryBookings() {
@@ -468,6 +474,7 @@ public class BookingController {
         task.setOnFailed(e -> {
             createBookingBtn.setDisable(false);
             createBookingErrorLabel.setText("Kunne ikke oprette booking: " + task.getException().getMessage());
+
         });
         return task;
     }
