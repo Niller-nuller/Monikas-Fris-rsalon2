@@ -5,7 +5,9 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.util.Duration;
 import org.example.monikasfrisrsalon2.b_service.ServiceLogin;
 
@@ -22,11 +24,20 @@ public class RegisterController {
     private MFXPasswordField passwordfield;
     @FXML
     private Label errorLabel;
+    @FXML
+    private ComboBox<String> roleComboBox;
+
+    @FXML
+    private void initialize(){
+        roleComboBox.getItems().addAll("Admin", "Employee");
+        roleComboBox.setValue("Operator");
+    }
+
 
     @FXML
     public void onSignUpButton(javafx.event.ActionEvent event) {
         try{
-        serviceLogin.createOperator(serviceLogin.createOperator(usernameTextfield.getText(), passwordfield.getText()));
+        serviceLogin.createOperator(serviceLogin.createOperator(usernameTextfield.getText(), passwordfield.getText(), roleComboBox.getValue()));
             try {
                 SceneNavigator.switchTo(event, "/org/example/monikasfrisrsalon2/login.fxml");
             } catch (IOException e) {

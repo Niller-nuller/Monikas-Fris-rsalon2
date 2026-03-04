@@ -11,7 +11,7 @@ public class TreatmentRegistry {
         DEFINITIONS.put(TreatmentType.Bleaching, new Treatment(3, "Bleaching", 45, 500, TreatmentType.Bleaching));
     }
 
-    public void getDefinition (TreatmentType type) {
-        DEFINITIONS.get(type);
+    public Treatment getDefinition (TreatmentType type) {
+        return DEFINITIONS.get(type);
     }
 }
