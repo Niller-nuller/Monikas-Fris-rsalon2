@@ -15,7 +15,7 @@ public class OperatorRepository {
 
         String hashedPassword = BCrypt.hashpw(operator.getPassword(), BCrypt.gensalt());
 
-        String sql = "insert into operators (username, password_hash, role) values (?, ?, ?)";
+        String sql = "insert into operator (Username, PasswordHash, Role) values (?, ?, ?)";
 
 
         try (Connection conn = DbConnect.getConnection();
@@ -30,7 +30,7 @@ public class OperatorRepository {
 
     }
     public Operator loginOperator (Operator loginRequest) throws SQLException {
-        String sql = "select id, username, password_hash, role from operators where username = ?";
+        String sql = "select OperatorId, Username, PasswordHash, Role from operator where Username = ?";
         try (Connection conn = DbConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -38,14 +38,14 @@ public class OperatorRepository {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String storedHash = rs.getString("password_hash");
+                String storedHash = rs.getString("PasswordHash");
                 if (BCrypt.checkpw(loginRequest.getPassword(), storedHash)) {
 
                     return new Operator(
-                            rs.getInt("id"),
-                            rs.getString("username"),
+                            rs.getInt("OperatorId"),
+                            rs.getString("Username"),
                             null,
-                            rs.getString("role")
+                            rs.getString("Role")
                     );
                 }
             }
@@ -53,7 +53,7 @@ public class OperatorRepository {
         }
     }
     public Operator findByUsername (String username) throws SQLException {
-        String sql = "select id , username, password_hash, role from operators where username = ?";
+        String sql = "select OperatorId, Username, PasswordHash, Role from operator where Username = ?";
         try (Connection conn = DbConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -61,10 +61,10 @@ public class OperatorRepository {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Operator(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("role")
+                        rs.getInt("OperatorId"),
+                        rs.getString("Username"),
+                        rs.getString("PasswordHash"),
+                        rs.getString("Role")
                 );
             }
         }

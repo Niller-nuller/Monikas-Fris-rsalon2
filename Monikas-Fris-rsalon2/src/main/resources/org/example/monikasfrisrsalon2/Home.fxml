@@ -42,20 +42,73 @@
                style="-fx-background-color: rgba(0,0,0,0.35);">
 
         <!-- The popup itself -->
-        <AnchorPane fx:id="createCustomerTab" prefWidth="420" prefHeight="260"
-                    style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.2, 0, 6);">
+        <AnchorPane fx:id="createCustomerTab" prefWidth="920" prefHeight="560"
+                    style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;
+                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.2, 0, 6);">
 
-            <Label text="Create customer" style="-fx-font-size: 18; -fx-font-weight: bold;"
-                   layoutX="16" layoutY="12"/>
+            <Label text="Opret bestilling" layoutX="16" layoutY="12"
+                   style="-fx-font-size: 18; -fx-font-weight: bold;"/>
 
-            <Label text="Name" layoutX="16" layoutY="60"/>
-            <TextField fx:id="nameField" layoutX="16" layoutY="80" prefWidth="388"/>
+            <Button text="✕" onAction="#closeCreateCustomerTab"
+                    layoutX="880" layoutY="10" prefWidth="30" prefHeight="30"
+                    style="-fx-background-color: transparent; -fx-font-size: 14;"/>
 
-            <Label text="Email" layoutX="16" layoutY="120"/>
-            <TextField fx:id="emailField" layoutX="16" layoutY="140" prefWidth="388"/>
+            <VBox layoutX="16" layoutY="50" prefWidth="888" prefHeight="460" spacing="14">
 
-            <Button text="Cancel" onAction="#closeCreateCustomerTab" layoutX="240" layoutY="200"/>
-            <Button text="Save" onAction="#savePopup" layoutX="320" layoutY="200" defaultButton="true"/>
+                <HBox spacing="18">
+
+                    <!-- LEFT: Customer info -->
+                    <VBox spacing="10" prefWidth="280">
+                        <Label text="Kunde information" style="-fx-font-weight: bold;"/>
+
+                        <Label text="Navn"/>
+                        <TextField fx:id="nameField" promptText="Navn"/>
+
+                        <Label text="Email"/>
+                        <TextField fx:id="emailField" promptText="Email"/>
+
+                        <Label text="Telefon"/>
+                        <TextField fx:id="phoneField" promptText="Telefon"/>
+                    </VBox>
+
+                    <Separator orientation="VERTICAL"/>
+
+                    <!-- RIGHT: Wizard -->
+                    <VBox spacing="12" prefWidth="560">
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Dato" prefWidth="90"/>
+                            <DatePicker fx:id="bookingDatePicker"/>
+                        </HBox>
+
+                        <!-- Step 1: Treatments -->
+                        <VBox fx:id="treatmentSection" spacing="8">
+                            <Label text="Vælg behandling" style="-fx-font-weight: bold;"/>
+                            <FlowPane fx:id="treatmentPane" hgap="10" vgap="10" prefWrapLength="520"/>
+                        </VBox>
+
+                        <!-- Step 2: Hairdressers (hidden until treatment selected) -->
+                        <VBox fx:id="hairdresserSection" spacing="8" visible="false" managed="false">
+                            <Label text="Vælg medarbejder" style="-fx-font-weight: bold;"/>
+                            <FlowPane fx:id="hairdresserPane" hgap="10" vgap="10" prefWrapLength="520"/>
+                        </VBox>
+
+                        <!-- Step 3: Slots (hidden until hairdresser selected) -->
+                        <VBox fx:id="slotSection" spacing="8" visible="false" managed="false">
+                            <Label text="Vælg tid" style="-fx-font-weight: bold;"/>
+                            <FlowPane fx:id="slotPane" hgap="10" vgap="10" prefWrapLength="520"/>
+                        </VBox>
+
+                        <Label fx:id="createBookingErrorLabel" textFill="#bf616a" wrapText="true"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Cancel" onAction="#closeCreateCustomerTab"/>
+                    <Button fx:id="createBookingBtn" text="Create booking" onAction="#onCreateBooking" defaultButton="true"/>
+                </HBox>
+
+            </VBox>
         </AnchorPane>
     </StackPane>
 

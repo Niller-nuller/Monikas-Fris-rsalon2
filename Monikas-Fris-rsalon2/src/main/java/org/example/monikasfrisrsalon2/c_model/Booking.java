@@ -11,18 +11,18 @@ public class Booking {
     private int duration;
     private LocalDateTime BookingTime;
     private String hairdresserName;
-    private TreatmentType treatment;
+    private String treatmentName;
     private Status status;
 
 
 
-    public Booking(int id, String name, String phoneNumber, String email,TreatmentType treatment, int duration, LocalDateTime dateTime,
+    public Booking(int id, String name, String phoneNumber, String email,String treatmentName, int duration, LocalDateTime dateTime,
                    String hairdresserName,Status status) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.treatment = treatment;
+        this.treatmentName = treatmentName;
         this.duration = duration;
         this.hairdresserName = hairdresserName;
         this.BookingTime = dateTime;
@@ -36,5 +36,5 @@ public class Booking {
     public String getPhoneNumber() { return phoneNumber; }
     public String getEmail() { return email; }
     public String getHairdresser() { return hairdresserName; }
-    public TreatmentType getTreatment() { return treatment; }
+    public String getTreatment() { return treatmentName; }
 }

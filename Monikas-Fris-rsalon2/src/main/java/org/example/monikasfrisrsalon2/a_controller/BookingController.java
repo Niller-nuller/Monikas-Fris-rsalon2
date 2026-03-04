@@ -8,38 +8,22 @@ import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.example.monikasfrisrsalon2.b_service.Service;
 import org.example.monikasfrisrsalon2.c_model.Booking;
-import org.example.monikasfrisrsalon2.c_model.TreatmentType;
-import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.function.Function;
-
-import static java.awt.Color.white;
 
 
 public class BookingController {
@@ -57,6 +41,10 @@ public class BookingController {
     private MFXPaginatedTableView<AppointmentRow> active_AppointmentsTable;
     @FXML
     private MFXPaginatedTableView<AppointmentRow> history_AppointmentsTable;
+
+    private org.example.monikasfrisrsalon2.c_model.Treatment selectedTreatment;
+    private org.example.monikasfrisrsalon2.c_model.Hairdresser selectedHairdresser;
+    private LocalDateTime selectedStartTime;
 
     private MFXTableColumn<AppointmentRow> timeCol;
     private MFXTableColumn<AppointmentRow> customerCol;
@@ -86,6 +74,23 @@ public class BookingController {
     private StackPane overlayInspectCustomerTab;
     @FXML
     private AnchorPane inspectCustomerTab;
+
+
+    ///  SECTION FOR CREATE BOOKING
+    @FXML private TextField phoneField;
+
+    @FXML private DatePicker bookingDatePicker;
+
+    @FXML private VBox treatmentSection;
+    @FXML private VBox hairdresserSection;
+    @FXML private VBox slotSection;
+
+    @FXML private FlowPane treatmentPane;
+    @FXML private FlowPane hairdresserPane;
+    @FXML private FlowPane slotPane;
+
+    @FXML private Label createBookingErrorLabel;
+    @FXML private Button createBookingBtn;
 
 
     //
@@ -128,6 +133,8 @@ public class BookingController {
             }
         });
         overlayInspectCustomerTab.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
+        setupBookingWizard();
     }
 
     public record AppointmentRow(
@@ -328,6 +335,32 @@ public class BookingController {
 
         mainPane.setDisable(true);
 
+
+        nameField.clear();
+        emailField.clear();
+        phoneField.clear();
+
+        selectedTreatment = null;
+        selectedHairdresser = null;
+        selectedStartTime = null;
+
+        createBookingErrorLabel.setText("");
+        createBookingBtn.setDisable(false);
+
+
+        bookingDatePicker.setValue(java.time.LocalDate.now());
+
+
+        treatmentPane.getChildren().clear();
+        hairdresserPane.getChildren().clear();
+        slotPane.getChildren().clear();
+
+        hideSection(hairdresserSection);
+        hideSection(slotSection);
+
+
+        loadAndShowTreatments();
+
         nameField.requestFocus();
     }
 
@@ -368,13 +401,13 @@ public class BookingController {
                                 String tlf_number,
                                 LocalDateTime date,
                                 String hairdresserName,
-                                TreatmentType treatmentType) {
+                                String treatmentName) {
         String customerName = name;
         String customerEmail = email;
         String customerTlfNumber = tlf_number;
         LocalDateTime customerDate = date;
         String customerHairdresserName = hairdresserName;
-        TreatmentType customerTreatmentType = treatmentType;
+        String TreatmentName = treatmentName;
     }
 
     private void onInspectRow(AppointmentRow row) {
@@ -390,6 +423,238 @@ public class BookingController {
         } catch (SQLException e) {
             System.out.println("Delete Fejl: " + e.getMessage());
         }
+    }
+
+    ///  NEW - CREATE BOOKING
+
+    @FXML
+    private void onCreateBooking(ActionEvent event) {
+        createBookingErrorLabel.setText("");
+
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String phone = phoneField.getText().trim();
+
+        if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) {
+            createBookingErrorLabel.setText("Udfyld venligst navn, email og telefon.");
+            return;
+        }
+        if (selectedTreatment == null || selectedHairdresser == null || selectedStartTime == null) {
+            createBookingErrorLabel.setText("Vælg behandling, medarbejder og tid.");
+            return;
+        }
+
+        createBookingBtn.setDisable(true);
+
+        Task<Void> task = getVoidTask(name, email, phone);
+
+        new Thread(task).start();
+    }
+
+    private Task<Void> getVoidTask(String name, String email, String phone) {
+        Task<Void> task = new Task<>() {
+            @Override protected Void call() throws Exception {
+                service.createBooking(name, email, phone, selectedTreatment, selectedHairdresser, selectedStartTime);
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            createBookingBtn.setDisable(false);
+            closeCreateCustomerTab();
+            reloadActiveBookings();
+        });
+
+        task.setOnFailed(e -> {
+            createBookingBtn.setDisable(false);
+            createBookingErrorLabel.setText("Kunne ikke oprette booking: " + task.getException().getMessage());
+        });
+        return task;
+    }
+
+    private void setupBookingWizard() {
+        bookingDatePicker.setValue(java.time.LocalDate.now());
+
+        bookingDatePicker.valueProperty().addListener((obs, oldV, newV) -> {
+
+            selectedStartTime = null;
+            hideSection(slotSection);
+            slotPane.getChildren().clear();
+
+
+            if (selectedTreatment != null && selectedHairdresser != null) {
+                loadAndShowSlots();
+            }
+        });
+
+
+        loadAndShowTreatments();
+    }
+
+    private void loadAndShowTreatments() {
+        treatmentPane.getChildren().clear();
+        hideSection(hairdresserSection);
+        hideSection(slotSection);
+
+        selectedTreatment = null;
+        selectedHairdresser = null;
+        selectedStartTime = null;
+
+        javafx.concurrent.Task<java.util.List<org.example.monikasfrisrsalon2.c_model.Treatment>> task =
+                new javafx.concurrent.Task<>() {
+                    @Override protected java.util.List<org.example.monikasfrisrsalon2.c_model.Treatment> call() throws Exception {
+                        return service.getTreatments();
+                    }
+                };
+
+        task.setOnSucceeded(e -> {
+            var treatments = task.getValue();
+            populateSelectionButtons(
+                    treatmentPane,
+                    treatments,
+                    org.example.monikasfrisrsalon2.c_model.Treatment::getName,
+                    t -> {
+                        selectedTreatment = t;
+
+
+                        selectedHairdresser = null;
+                        selectedStartTime = null;
+                        slotPane.getChildren().clear();
+                        hideSection(slotSection);
+
+                        loadAndShowHairdressers(t);
+                    }
+            );
+        });
+
+        task.setOnFailed(e -> createBookingErrorLabel.setText("Kunne ikke hente behandlinger: " + task.getException().getMessage()));
+
+        new Thread(task).start();
+    }
+
+    private void loadAndShowHairdressers(org.example.monikasfrisrsalon2.c_model.Treatment treatment) {
+        hairdresserPane.getChildren().clear();
+        showSection(hairdresserSection);
+
+        javafx.concurrent.Task<java.util.List<org.example.monikasfrisrsalon2.c_model.Hairdresser>> task =
+                new javafx.concurrent.Task<>() {
+                    @Override protected java.util.List<org.example.monikasfrisrsalon2.c_model.Hairdresser> call() throws Exception {
+                        return service.getEligibleHairdressers(treatment);
+                    }
+                };
+
+        task.setOnSucceeded(e -> {
+            var hairdressers = task.getValue();
+            populateSelectionButtons(
+                    hairdresserPane,
+                    hairdressers,
+                    org.example.monikasfrisrsalon2.c_model.Hairdresser::getName,
+                    h -> {
+                        selectedHairdresser = h;
+
+                        // Click opens next section:
+                        selectedStartTime = null;
+                        loadAndShowSlots();
+                    }
+            );
+        });
+
+        task.setOnFailed(e -> createBookingErrorLabel.setText("Kunne ikke hente medarbejdere: " + task.getException().getMessage()));
+
+        new Thread(task).start();
+    }
+
+    private void loadAndShowSlots() {
+        slotPane.getChildren().clear();
+        showSection(slotSection);
+
+        var date = bookingDatePicker.getValue();
+        if (date == null || selectedTreatment == null || selectedHairdresser == null) return;
+
+        javafx.concurrent.Task<java.util.List<Service.TimeSlot>> task =
+                new javafx.concurrent.Task<>() {
+                    @Override protected java.util.List<Service.TimeSlot> call() throws Exception {
+                        return service.getTimeSlots(date, selectedHairdresser, selectedTreatment);
+                    }
+                };
+
+        task.setOnSucceeded(e -> {
+            var slots = task.getValue();
+            populateSlotButtons(slots);
+        });
+
+        task.setOnFailed(e -> createBookingErrorLabel.setText("Kunne ikke hente tider: " + task.getException().getMessage()));
+
+        new Thread(task).start();
+    }
+
+    private <T> void populateSelectionButtons(
+            FlowPane pane,
+            java.util.List<T> items,
+            java.util.function.Function<T, String> labelFn,
+            java.util.function.Consumer<T> onSelect
+    ) {
+        pane.getChildren().clear();
+
+        final java.util.concurrent.atomic.AtomicReference<javafx.scene.control.ButtonBase> selectedBtnRef =
+                new java.util.concurrent.atomic.AtomicReference<>(null);
+
+        for (T item : items) {
+
+            javafx.scene.control.Button btn = new javafx.scene.control.Button(labelFn.apply(item));
+            btn.getStyleClass().add("select-btn");
+
+            btn.setOnAction(ev -> {
+                // visual selection
+                var prev = selectedBtnRef.get();
+                if (prev != null) prev.getStyleClass().remove("selected");
+                btn.getStyleClass().add("selected");
+                selectedBtnRef.set(btn);
+
+                onSelect.accept(item);
+            });
+
+            pane.getChildren().add(btn);
+        }
+    }
+
+    private void populateSlotButtons(java.util.List<Service.TimeSlot> slots) {
+        slotPane.getChildren().clear();
+
+        final java.util.concurrent.atomic.AtomicReference<javafx.scene.control.Button> selectedBtnRef =
+                new java.util.concurrent.atomic.AtomicReference<>(null);
+
+        var fmt = java.time.format.DateTimeFormatter.ofPattern("HH:mm");
+
+        for (var slot : slots) {
+            javafx.scene.control.Button btn = new javafx.scene.control.Button(slot.start().format(fmt));
+            btn.getStyleClass().add("select-btn");
+
+            if (!slot.available()) {
+                btn.setDisable(true);
+            } else {
+                btn.setOnAction(e -> {
+                    var prev = selectedBtnRef.get();
+                    if (prev != null) prev.getStyleClass().remove("selected");
+                    btn.getStyleClass().add("selected");
+                    selectedBtnRef.set(btn);
+
+                    selectedStartTime = slot.start();
+                });
+            }
+
+            slotPane.getChildren().add(btn);
+        }
+    }
+
+    private void showSection(VBox box) {
+        box.setManaged(true);
+        box.setVisible(true);
+    }
+
+    private void hideSection(VBox box) {
+        box.setVisible(false);
+        box.setManaged(false);
     }
 
 }
