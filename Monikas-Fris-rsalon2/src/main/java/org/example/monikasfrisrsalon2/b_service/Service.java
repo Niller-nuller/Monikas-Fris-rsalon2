@@ -38,7 +38,8 @@ public class Service {
 
     public void populateHairdressers(){
         try{
-        hairdressers = hairDresserRepo.loadHairdressers();}catch(Exception e){
+        hairdressers = hairDresserRepo.loadHairdressers();}
+        catch(Exception e){
             System.out.println("SQL problem");
         }
     }
@@ -57,7 +58,6 @@ public class Service {
         System.out.println("GET ACTIVE BOOKINGS ACTIVATED");
         List<Booking> aBookings = new ArrayList<>();
         LocalDateTime lDate = LocalDateTime.of(2026, 02, 27, 14, 30);
-        aBookings.add(new Booking(1, "Jonas", "23907290", "Hej@gmail.com",TreatmentType.MandCut,45,lDate, "Monika",Status.Pending));
         return aBookings;
     }
     
@@ -65,21 +65,8 @@ public class Service {
         this.currentOperator = serviceLogin.getOperator();
     }
 
-    public void createBooking(Customer customer, Hairdresser hairdresser, TreatmentType treatmentType) throws SQLException {
-        LocalDateTime dateTime = LocalDateTime.now();
-        try{
-        bookingRepo.createABooking(customer, hairdresser, getTreatment(treatmentType), dateTime);} catch(Exception e){
-            throw e;
-        }
-    }
-
     public Customer createCustomer(int id, String name, String email, String phoneNumber){
         return new Customer(id, name, email, phoneNumber);
-    }
-    public Treatment getTreatment(TreatmentType treatmentType){
-        TreatmentRegistry treatmentRegistry = new TreatmentRegistry();
-        Treatment treatment = treatmentRegistry.getDefinition(treatmentType);
-        return treatment;
     }
     public LocalDateTime getBookingTime(int year, int month, int day, int hour){
         LocalDateTime startTime = LocalDateTime.of(year, month, day, hour, 0);
@@ -93,5 +80,47 @@ public class Service {
             }
         }
         return null;
+    }
+
+    ///  NEW
+
+    public java.util.List<Treatment> getTreatments() throws SQLException {
+        return treatmentRepo.loadTreatments();
+    }
+
+    public java.util.List<Hairdresser> getEligibleHairdressers(Treatment treatment) throws SQLException {
+        return hairDresserRepo.loadHairdressers();
+    }
+
+    public record TimeSlot(LocalDateTime start, LocalDateTime end, boolean available) {}
+
+    public java.util.List<TimeSlot> getTimeSlots(java.time.LocalDate date, Hairdresser hairdresser, Treatment treatment) throws SQLException {
+        var booked = bookingRepo.getBookedIntervals(hairdresser.getId(), date);
+
+        LocalDateTime open = date.atTime(9, 0);
+        LocalDateTime close = date.atTime(17, 0);
+
+        int duration = treatment.getDurationMinutes();
+        int step = 15;
+
+        java.util.List<TimeSlot> slots = new java.util.ArrayList<>();
+
+        for (LocalDateTime start = open; !start.plusMinutes(duration).isAfter(close); start = start.plusMinutes(step)) {
+            LocalDateTime end = start.plusMinutes(duration);
+
+            LocalDateTime finalStart = start;
+            boolean overlaps = booked.stream().anyMatch(b ->
+                    finalStart.isBefore(b.end()) && end.isAfter(b.start())
+            );
+
+            slots.add(new TimeSlot(start, end, !overlaps));
+        }
+        return slots;
+    }
+
+    public void createBooking(String name, String email, String phone,
+                              Treatment treatment, Hairdresser hairdresser, LocalDateTime start) throws SQLException {
+        Customer customer = customerRepo.upsertCustomer(name, email, phone);
+        bookingRepo.createABooking(customer, hairdresser, treatment, start);
     }
 }

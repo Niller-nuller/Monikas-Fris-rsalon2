@@ -5,14 +5,12 @@ public class Treatment {
     private String name;
     private int durationMinutes;
     private double price;
-    private TreatmentType type;
 
-    public Treatment(int id, String name, int durationMinutes, double price, TreatmentType type) {
+    public Treatment(int id, String name, int durationMinutes, double price) {
         this.id = id;
         this.name = name;
         this.durationMinutes = durationMinutes;
         this.price = price;
-        this.type = type;
     }
     public int getId() {
         return id;
@@ -25,9 +23,6 @@ public class Treatment {
     }
     public double getPrice() {
         return price;
-    }
-    public TreatmentType getType() {
-        return type;
     }
     @Override
     public String toString() {

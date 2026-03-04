@@ -1,7 +1,6 @@
 package org.example.monikasfrisrsalon2.e_repository;
 
 import org.example.monikasfrisrsalon2.c_model.Treatment;
-import org.example.monikasfrisrsalon2.c_model.TreatmentType;
 import org.example.monikasfrisrsalon2.d_dbconfig.DbConnect;
 
 import java.sql.Connection;
@@ -32,14 +31,12 @@ public class TreatmentRepo {
     }
 
     private Treatment createTreatmentFromResult(ResultSet rs) throws SQLException {
-        int id = rs.getInt("id");
-        String name = rs.getString("name");
-        int durationMinutes = rs.getInt("durationMinutes");
-        double price = rs.getDouble("price");
-        String typeString = rs.getString("type");
-        TreatmentType type = TreatmentType.valueOf(typeString);
+        int id = rs.getInt("TreatmentId");
+        String name = rs.getString("Name");
+        int durationMinutes = rs.getInt("DurationMinutes");
+        double price = rs.getDouble("Price");
 
-        return new Treatment(id, name, durationMinutes, price, type);
+        return new Treatment(id, name, durationMinutes, price);
 
     }
 

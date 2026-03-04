@@ -28,7 +28,7 @@ public class BookingRepo {
                         h.email AS hairdresser_email,
                         h.phoneNumber AS hairdresser_phone,
                         b.availability,
-                        t.type AS treatment_type
+                        t.name AS treatment_name
                         FROM bookings b
                         JOIN customers c ON b.customer_id = c.id
                         JOIN hairdressers h ON b.hairdresser_id = h.id
@@ -52,23 +52,23 @@ public class BookingRepo {
     }
 
     private Booking createBookingFromResult(ResultSet rs) throws SQLException {
-       int id = rs.getInt("id");
-       String name = rs.getString("customer_name");
-       String phoneNumber = rs.getString("customer_phonenumber");
-       String email = rs.getString("customer_email");
-       int duration = rs.getInt("treatment_duration");
-       LocalDateTime dateTime = rs.getTimestamp("due_at").toLocalDateTime();
-       String hairdresserName = rs.getString("hairdresser_name");
-       TreatmentType treatment = TreatmentType.valueOf(rs.getString("treatment_type"));
-       Status status = Status.valueOf(rs.getString("status"));
+       int id = rs.getInt("BookingId");
+       String name = rs.getString("Name");
+       String phoneNumber = rs.getString("PhoneNumber");
+       String email = rs.getString("Email");
+       int duration = rs.getInt("DurationMinutes");
+       LocalDateTime dateTime = rs.getTimestamp("EndTime").toLocalDateTime();
+       String hairdresserName = rs.getString("Name");
+       String treatment_name = rs.getString("Name");
+       Status status = Status.valueOf(rs.getString("Status"));
 
-       return new Booking(id,name,phoneNumber,email, treatment, duration,dateTime,hairdresserName,status);
+       return new Booking(id,name,phoneNumber,email, treatment_name, duration,dateTime,hairdresserName,status);
     }
 
     public void createABooking(Customer customer, Hairdresser hairdresser, Treatment treatment, LocalDateTime startTime) throws SQLException {
         int duration = treatment.getDurationMinutes();
         LocalDateTime endTime = startTime.plusMinutes(duration);
-        String SQL = "INSERT INTO bookings (customer_id, hairdresser_id, treatment_id, start_time, end_time) VALUES (?,?,?,?,?)";
+        String SQL = "INSERT INTO booking (CustomerId, HairdresserId, TreatmentId, StartTime, EndTime) VALUES (?,?,?,?,?)";
         try(Connection conn = DbConnect.getConnection()){
             try(PreparedStatement ps = conn.prepareStatement(SQL);){
                 ps.setInt(1,customer.getId());
@@ -76,8 +76,38 @@ public class BookingRepo {
                 ps.setInt(3,treatment.getId());
                 ps.setTimestamp(4, Timestamp.valueOf(startTime));
                 ps.setTimestamp(5,Timestamp.valueOf(endTime));
-                ps.executeQuery();
+                ps.executeUpdate();
             }
         }
+    }
+
+    /// NEW
+    public record BookedInterval(LocalDateTime start, LocalDateTime end) {}
+
+    public java.util.List<BookedInterval> getBookedIntervals(int hairdresserId, java.time.LocalDate date) throws SQLException {
+        String sql = """
+        SELECT StartTime, EndTime
+        FROM Booking
+        WHERE HairdresserId = ?
+          AND DATE(StartTime) = ?
+    """;
+
+        java.util.List<BookedInterval> out = new java.util.ArrayList<>();
+
+        try (Connection conn = DbConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, hairdresserId);
+            ps.setDate(2, java.sql.Date.valueOf(date));
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    LocalDateTime start = rs.getTimestamp("StartTime").toLocalDateTime();
+                    LocalDateTime end = rs.getTimestamp("EndTime").toLocalDateTime();
+                    out.add(new BookedInterval(start, end));
+                }
+            }
+        }
+        return out;
     }
 }
