@@ -53,25 +53,40 @@ public class BookingRepo {
     }
     public List<Booking> getBookingListBasedOnStatus(Status status, LocalDate date) throws SQLException {
         List<Booking> bookings = new ArrayList<>();
-        String SQL = """
-                SELECT b.BookingId, c.Name AS customerName, t.Name AS treatmentName,
-                t.DurationMinutes AS treatmentDuration, e.Name AS employeeName,
-                b.StartTime, b.Status
-                FROM Booking b          -- Changed from 'bookings'
-                LEFT JOIN Customer c ON b.CustomerId = c.CustomerId     -- Changed casing
-                LEFT JOIN Employee e ON b.EmployeeId = e.EmployeeId     -- Changed casing \s
-                LEFT JOIN Treatment t ON b.TreatmentId = t.TreatmentId  -- Changed casing
-                WHERE b.Status = ? AND DATE(b.StartTime) = ?
-                ORDER BY b.StartTime""";
-        try (Connection conn = DbConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(SQL)) {
-            ps.setString(1, status.toString());
+
+        String sql = """
+        SELECT
+            b.BookingId,
+            c.Name AS customer_name,
+            c.Email AS customer_email,
+            c.PhoneNumber AS customer_phoneNumber,
+            t.DurationMinutes AS treatment_duration,
+            b.StartTime,
+            b.EndTime,
+            h.Name AS hairdresser_name,
+            t.Name AS treatment_name,
+            b.Status
+        FROM booking b
+        LEFT JOIN customer c ON b.CustomerId = c.CustomerId
+        LEFT JOIN hairdresser h ON b.HairdresserId = h.HairdresserId
+        LEFT JOIN treatment t ON b.TreatmentId = t.TreatmentId
+        WHERE b.Status = ? AND DATE(b.StartTime) = ?
+        ORDER BY b.StartTime
+    """;
+
+        try (Connection conn = DbConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status.name());
             ps.setDate(2, java.sql.Date.valueOf(date));
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Booking booking = createBookingFromResult(rs);
-                bookings.add(booking);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    bookings.add(createBookingFromResult(rs));
+                }
             }
         }
+
         return bookings;
     }
     private Booking createBookingFromResult(ResultSet rs) throws SQLException {
@@ -86,7 +101,7 @@ public class BookingRepo {
         String treatmentName = rs.getString("treatment_name");
         Status status = Status.valueOf(rs.getString("Status"));
 
-        return new Booking(id, customerName, customerPhone, customerEmail, treatmentName, duration, endTime, hairdresserName, status);
+        return new Booking(id, customerName, customerPhone, customerEmail, treatmentName, duration, startTime, hairdresserName, status);
     }
 
 
@@ -145,5 +160,17 @@ public class BookingRepo {
             }
         }
         return out;
+    }
+
+    public void cancelBooking(int bookingId) throws SQLException {
+        String sql = "UPDATE booking SET Status = ? WHERE BookingId = ?";
+
+        try (Connection conn = DbConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, Status.Cancelled.name());
+            ps.setInt(2, bookingId);
+            ps.executeUpdate();
+        }
     }
 }

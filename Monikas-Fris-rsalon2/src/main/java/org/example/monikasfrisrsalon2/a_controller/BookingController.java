@@ -12,15 +12,18 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.example.monikasfrisrsalon2.b_service.Service;
+import org.example.monikasfrisrsalon2.b_service.ServiceLogin;
 import org.example.monikasfrisrsalon2.c_model.Booking;
 import org.example.monikasfrisrsalon2.c_model.Operator;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,13 +34,13 @@ import java.util.Comparator;
 public class BookingController {
 
     private final Service service;
+    private final ServiceLogin serviceLogin;
 
-    public BookingController(Service service) {
+    public BookingController(Service service, ServiceLogin serviceLogin) {
         this.service = service;
+        this.serviceLogin = serviceLogin;
     }
 
-    private final ObservableList<AppointmentRow> activeRows = FXCollections.observableArrayList();
-    private final ObservableList<AppointmentRow> historyRows = FXCollections.observableArrayList();
 
     @FXML
     private MFXPaginatedTableView<AppointmentRow> active_AppointmentsTable;
@@ -47,7 +50,11 @@ public class BookingController {
     private org.example.monikasfrisrsalon2.c_model.Treatment selectedTreatment;
     private org.example.monikasfrisrsalon2.c_model.Hairdresser selectedHairdresser;
     private LocalDateTime selectedStartTime;
-    private Operator operatorId;
+    @FXML private Label operatorName;
+
+    @FXML private DatePicker viewingDatePicker;
+
+    private LocalDate selectedDate;
 
     private MFXTableColumn<AppointmentRow> timeCol;
     private MFXTableColumn<AppointmentRow> customerCol;
@@ -95,24 +102,60 @@ public class BookingController {
     @FXML private Label createBookingErrorLabel;
     @FXML private Button createBookingBtn;
 
+    ///  SECTION FOR INSPECT DATA
+
+    @FXML private Label customerName;
+    @FXML private Label customerEmail;
+    @FXML private Label customerTlfNumber;
+    @FXML private Label customerDate;
+    @FXML private Label customerHairdresserName;
+    @FXML private Label customerTreatmentName;
+    @FXML private Label customerStatus;
+
 
     //
 
     @FXML
     public void initialize() {
+
+        operatorName.setText(serviceLogin.getOperator().getUsername());
+
+
+        selectedDate = LocalDate.now();
+
+        viewingDatePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            if (newDate == null) return;
+            selectedDate = newDate;
+            reloadActiveBookings();
+            reloadHistoryBookings();
+        });
+
+
+        viewingDatePicker.setValue(selectedDate);
+
+        attachStylesheetWhenReady(mainPane, "/org/example/monikasfrisrsalon2/Styles/Style.css");
+
         createActiveTableView();
         active_AppointmentsTable.setRowsPerPage(5);
 
-        // run after control is attached (safer with virtualized controls)
-        active_AppointmentsTable.sceneProperty().addListener((obs, old, scene) -> {
-            if (scene != null) Platform.runLater(this::reloadActiveBookings);
+        createHistoryTableView();
+        history_AppointmentsTable.setRowsPerPage(5);
+
+
+        Runnable initialLoad = () -> {
+
+            selectedDate = viewingDatePicker.getValue();
+            reloadActiveBookings();
+            reloadHistoryBookings();
+        };
+
+        mainPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) Platform.runLater(initialLoad);
         });
 
-        /*
-        createHistoryTableView();
-        reloadHistoryBookings();
-
-         */
+        if (mainPane.getScene() != null) {
+            Platform.runLater(initialLoad);
+        }
 
         // NEW
         overlayForCreateCustomer.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
@@ -305,7 +348,7 @@ public class BookingController {
 
     private void reloadActiveBookings(){
         try {
-            var rows = service.getAllBookings()
+            var rows = service.getAllPendingBookings(selectedDate)
                     .stream()
                     .map(this::toRow)
                     .toList();
@@ -316,21 +359,30 @@ public class BookingController {
 
         System.out.println("rows=" + rows.size()
                 + " tableItems=" + active_AppointmentsTable.getItems().size());
+            System.out.println(selectedDate);
+        } catch (RuntimeException e) {
+            System.out.println("Error loading active bookings");
+            System.out.println(selectedDate);
+        }
+    }
+
+    private void reloadHistoryBookings(){
+        try {
+            var rows = service.getAllBookings()
+                    .stream()
+                    .map(this::toRow)
+                    .toList();
+
+            history_AppointmentsTable.setItems(FXCollections.observableArrayList(rows));
+
+            history_AppointmentsTable.currentPageProperty().set(0);
+
+            System.out.println("rows=" + rows.size()
+                    + " tableItems=" + history_AppointmentsTable.getItems().size());
         } catch (RuntimeException e) {
             System.out.println("Error loading active bookings");
         }
     }
-    /*
-    private void reloadHistoryBookings() {
-        historyData.setAll(service.getHistoryBookings());
-    }
-
-    @FXML
-    private void onSearch() {
-        activeData.setAll(service.getBookingWithName(searchField.getText()));
-    }
-     */
-
 
     // NEW
 
@@ -394,31 +446,26 @@ public class BookingController {
     }
 
     @FXML
-    private void savePopup() {
-
-        // TODO: POPUP_LOGIC: BOOKING
-
-        closeCreateCustomerTab();
-    }
-
-    @FXML
     private void setInspectData(String name,
                                 String email,
                                 String tlf_number,
                                 LocalDateTime date,
                                 String hairdresserName,
-                                String treatmentName) {
-        String customerName = name;
-        String customerEmail = email;
-        String customerTlfNumber = tlf_number;
-        LocalDateTime customerDate = date;
-        String customerHairdresserName = hairdresserName;
-        String TreatmentName = treatmentName;
+                                String treatmentName,
+                                String status) {
+        customerName.setText(name);
+        customerEmail.setText(email);
+        customerTlfNumber.setText(tlf_number);
+        var fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        customerDate.setText(date == null ? "" : date.format(fmt));
+        customerHairdresserName.setText(hairdresserName);
+        customerTreatmentName.setText(treatmentName);
+        customerStatus.setText(status);
     }
 
     private void onInspectRow(AppointmentRow row) {
         Booking b = row.booking();
-        setInspectData(b.getName(),b.getEmail(),b.getPhoneNumber(),b.getDateTime(),b.getHairdresser(),b.getTreatment());
+        setInspectData(b.getName(),b.getEmail(),b.getPhoneNumber(),b.getDateTime(),b.getHairdresser(),String.valueOf(b.getTreatment()), String.valueOf(b.getStatus()));
         inspectCustomerTab();
     }
 
@@ -426,8 +473,13 @@ public class BookingController {
         Booking b = row.booking();
         try {
             service.cancelBooking(b);
+
+
+            reloadActiveBookings();
+            reloadHistoryBookings();
         } catch (SQLException e) {
             System.out.println("Delete Fejl: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -608,13 +660,14 @@ public class BookingController {
 
         for (T item : items) {
 
-            javafx.scene.control.Button btn = new javafx.scene.control.Button(labelFn.apply(item));
-            btn.getStyleClass().add("select-btn");
+            MFXButton btn = new MFXButton(labelFn.apply(item));
+            btn.getStyleClass().addAll("wizard");
 
             btn.setOnAction(ev -> {
                 // visual selection
                 var prev = selectedBtnRef.get();
                 if (prev != null) prev.getStyleClass().remove("selected");
+
                 btn.getStyleClass().add("selected");
                 selectedBtnRef.set(btn);
 
@@ -628,14 +681,14 @@ public class BookingController {
     private void populateSlotButtons(java.util.List<Service.TimeSlot> slots) {
         slotPane.getChildren().clear();
 
-        final java.util.concurrent.atomic.AtomicReference<javafx.scene.control.Button> selectedBtnRef =
+        final java.util.concurrent.atomic.AtomicReference<javafx.scene.control.ButtonBase> selectedBtnRef =
                 new java.util.concurrent.atomic.AtomicReference<>(null);
 
         var fmt = java.time.format.DateTimeFormatter.ofPattern("HH:mm");
 
         for (var slot : slots) {
-            javafx.scene.control.Button btn = new javafx.scene.control.Button(slot.start().format(fmt));
-            btn.getStyleClass().add("select-btn");
+            MFXButton btn = new MFXButton(slot.start().format(fmt));
+            btn.getStyleClass().addAll("wizard");
 
             if (!slot.available()) {
                 btn.setDisable(true);
@@ -643,6 +696,7 @@ public class BookingController {
                 btn.setOnAction(e -> {
                     var prev = selectedBtnRef.get();
                     if (prev != null) prev.getStyleClass().remove("selected");
+
                     btn.getStyleClass().add("selected");
                     selectedBtnRef.set(btn);
 
@@ -662,6 +716,37 @@ public class BookingController {
     private void hideSection(VBox box) {
         box.setVisible(false);
         box.setManaged(false);
+    }
+
+    private void attachStylesheetWhenReady(Region node, String preferredPath) {
+        node.sceneProperty().addListener((obs, oldScene, scene) -> {
+            if (scene == null) return;
+
+            var url = getClass().getResource(preferredPath);
+
+
+            if (url == null && preferredPath.startsWith("/org/example/")) {
+                String dotted = preferredPath.replace("/org/example/monikasfrisrsalon2/", "/org.example.monikasfrisrsalon2/");
+                url = getClass().getResource(dotted);
+            }
+
+
+            if (url == null) return;
+
+            String cssUrl = url.toExternalForm();
+            if (!scene.getStylesheets().contains(cssUrl)) {
+                scene.getStylesheets().add(cssUrl);
+            }
+        });
+    }
+
+    @FXML
+    private void logOut (ActionEvent event) {
+        try{
+            SceneNavigator.switchTo(event, "/org/example/monikasfrisrsalon2/Login.fxml");} catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
 }

@@ -47,7 +47,7 @@ public class HelloApplication extends Application {
         );
 
         Callback<Class<?>, Object> factory = type -> {
-            if (type == BookingController.class) return new BookingController(service);
+            if (type == BookingController.class) return new BookingController(service, serviceLogin);
             if (type == LoginController.class) return new LoginController(serviceLogin);
             if (type == RegisterController.class) return new RegisterController(serviceLogin);
             try {

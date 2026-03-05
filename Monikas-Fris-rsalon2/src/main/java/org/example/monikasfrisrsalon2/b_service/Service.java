@@ -44,6 +44,17 @@ public class Service {
             throw new RuntimeException("Could not load all bookings");
         }
     }
+
+    ///  GET ALL PENDING BOOKINGS
+
+    public List<Booking> getAllPendingBookings(LocalDate selectedDate){
+        try {
+            return bookingRepo.getBookingListBasedOnStatus(Status.Pending, selectedDate);
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not load pending bookings");
+        }
+    }
+
     public List<Booking> handleGetPendingBookings(LocalDate date){
         try {
             return bookingRepo.getBookingListBasedOnStatus(Status.Pending, date);
@@ -62,17 +73,10 @@ public class Service {
     }
 
     public void cancelBooking(Booking booking) throws SQLException {
-        //bookingRepo.chancelBooking(booking);
+        bookingRepo.cancelBooking(booking.getId());
     }
 
     // TEST
-
-    public List<Booking> getActiveBookings() {
-        System.out.println("GET ACTIVE BOOKINGS ACTIVATED");
-        List<Booking> aBookings = new ArrayList<>();
-        LocalDateTime lDate = LocalDateTime.of(2026, 02, 27, 14, 30);
-        return aBookings;
-    }
     
     public void getOperator(){
         this.currentOperator = serviceLogin.getOperator();
