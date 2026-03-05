@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: dbhair
 -- ------------------------------------------------------
--- Server version	8.0.45
+-- Server version	8.0.45 githubsucks
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -176,6 +176,17 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+INSERT INTO hairdresser (Name, Email, PhoneNumber) VALUES
+('Monika Jensen', 'monika.jensen@salon.dk', '20123456'),
+('Sofie Nielsen', 'sofie.nielsen@salon.dk', '20123457'),
+('Emma Hansen', 'emma.hansen@salon.dk', '20123458'),
+('Laura Pedersen', 'laura.pedersen@salon.dk', '20123459'),
+('Frederik Larsen', 'frederik.larsen@salon.dk', '20123460'),
+('Oliver Madsen', 'oliver.madsen@salon.dk', '20123461'),
+('Ida Kristensen', 'ida.kristensen@salon.dk', '20123462'),
+('Mikkel Sørensen', 'mikkel.sorensen@salon.dk', '20123463'),
+('Anna Rasmussen', 'anna.rasmussen@salon.dk', '20123464'),
+('Lucas Thomsen', 'lucas.thomsen@salon.dk', '20123465');
 -- Dump completed on 2026-03-05 18:46:30
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
@@ -285,6 +296,18 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+INSERT INTO Treatment (Name, DurationMinutes, Price, Type) VALUES
+('Women Haircut', 45, 450.00, 'Haircut'),
+('Men Haircut', 30, 300.00, 'Haircut'),
+('Kids Haircut', 25, 200.00, 'Haircut'),
+('Hair Coloring Full', 120, 1200.00, 'Color'),
+('Hair Coloring Roots', 90, 800.00, 'Color'),
+('Hair Highlights', 150, 1500.00, 'Color'),
+('Hair Wash & Blow Dry', 30, 250.00, 'Styling'),
+('Hair Straightening', 180, 2000.00, 'Treatment'),
+('Hair Curl Styling', 60, 500.00, 'Styling'),
+('Hair Repair Mask', 40, 350.00, 'Treatment');
 
 -- Dump completed on 2026-03-05 18:46:30
 ALTER TABLE Booking
