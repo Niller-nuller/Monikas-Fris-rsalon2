@@ -1,48 +1,292 @@
-create database dbHair
-use dbHair
-CREATE TABLE Operator (
-    OperatorId INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(100) NOT NULL UNIQUE,
-    PasswordHash VARCHAR(255) NOT NULL,
-    Role VARCHAR(50) NOT NULL,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE Employee (
-    EmployeeId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL,
-    Email VARCHAR(100) NOT NULL UNIQUE,
-    PhoneNumber VARCHAR(30) NOT NULL UNIQUE,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE Customer (
-    CustomerId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL,
-    Email VARCHAR(100) NOT NULL UNIQUE,
-    PhoneNumber VARCHAR(30) NOT NULL UNIQUE,
-    LastActivityAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE Treatment (
-    TreatmentId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL,
-    DurationMinutes INT NOT NULL,
-    Price DECIMAL(10,2) NOT NULL,  -- Better than DOUBLE for money
-    Type VARCHAR(100) NOT NULL,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE Booking (
-    BookingId INT AUTO_INCREMENT PRIMARY KEY,
-    CustomerId INT NOT NULL,
-    EmployeeId INT NOT NULL,
-    TreatmentId INT NOT NULL,
-    StartTime DATETIME NOT NULL,
-    Status VARCHAR(30) NOT NULL,
-    CompletedAt DATETIME NULL,
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: dbhair
+-- ------------------------------------------------------
+-- Server version	8.0.45
 
-    FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId),
-    FOREIGN KEY (EmployeeId) REFERENCES Employee(EmployeeId),
-    FOREIGN KEY (TreatmentId) REFERENCES Treatment(TreatmentId)
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `booking`
+--
+
+DROP TABLE IF EXISTS `booking`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking` (
+  `BookingId` int NOT NULL AUTO_INCREMENT,
+  `OperatorId` int NOT NULL,
+  `CustomerId` int NOT NULL,
+  `HairdresserId` int NOT NULL,
+  `TreatmentId` int NOT NULL,
+  `StartTime` datetime NOT NULL,
+  `EndTime` datetime DEFAULT NULL,
+  `Status` varchar(30) NOT NULL,
+  `CompletedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`BookingId`),
+  KEY `CustomerId` (`CustomerId`),
+  KEY `HairdresserId` (`HairdresserId`),
+  KEY `TreatmentId` (`TreatmentId`),
+  KEY `booking_ibfk_4` (`OperatorId`),
+  CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`CustomerId`) REFERENCES `customer` (`CustomerId`),
+  CONSTRAINT `booking_ibfk_2` FOREIGN KEY (`HairdresserId`) REFERENCES `hairdresser` (`HairdresserId`),
+  CONSTRAINT `booking_ibfk_3` FOREIGN KEY (`TreatmentId`) REFERENCES `treatment` (`TreatmentId`),
+  CONSTRAINT `booking_ibfk_4` FOREIGN KEY (`OperatorId`) REFERENCES `operator` (`OperatorId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking`
+--
+
+LOCK TABLES `booking` WRITE;
+/*!40000 ALTER TABLE `booking` DISABLE KEYS */;
+INSERT INTO `booking` VALUES (3,2,19,3,4,'2026-03-04 09:15:00','2026-03-04 10:15:00','Pending',NULL),(4,2,20,3,15,'2026-03-04 13:30:00','2026-03-04 16:00:00','Pending',NULL),(5,1,21,4,23,'2026-03-05 09:30:00','2026-03-05 09:45:00','Cancelled',NULL),(6,5,22,4,5,'2026-03-05 11:45:00','2026-03-05 12:15:00','Cancelled',NULL),(7,6,23,4,20,'2026-03-05 12:15:00','2026-03-05 13:00:00','Cancelled',NULL),(8,4,24,4,5,'2026-03-05 11:15:00','2026-03-05 11:45:00','Pending',NULL),(9,4,25,5,5,'2026-03-05 12:00:00','2026-03-05 12:30:00','Pending',NULL);
+/*!40000 ALTER TABLE `booking` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-05 18:46:30
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: dbhair
+-- ------------------------------------------------------
+-- Server version	8.0.45
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `customer`
+--
+
+DROP TABLE IF EXISTS `customer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `customer` (
+  `CustomerId` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100) NOT NULL,
+  `Email` varchar(100) NOT NULL,
+  `PhoneNumber` varchar(30) NOT NULL,
+  `LastActivityAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `CreatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`CustomerId`),
+  UNIQUE KEY `Email` (`Email`),
+  UNIQUE KEY `PhoneNumber` (`PhoneNumber`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customer`
+--
+
+LOCK TABLES `customer` WRITE;
+/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (3,'test','test2026@edu.dom','54807090','2026-03-04 10:34:16','2026-03-04 10:34:16'),(4,'adwfdaf','awdfawfwa','awfwadwa','2026-03-04 12:23:39','2026-03-04 12:23:39'),(5,'adsa','safas','safasdf','2026-03-04 12:43:21','2026-03-04 12:43:21'),(6,'wafdf','dawfawe','awdfawda','2026-03-04 12:45:33','2026-03-04 12:45:33'),(7,'wadd','sdad','sfcafa','2026-03-04 12:46:53','2026-03-04 12:46:53'),(8,'adsdaadwa','werfdawdafdw','adwafasdw','2026-03-04 12:49:36','2026-03-04 12:49:36'),(9,'sdaa','sad','sad','2026-03-04 12:54:03','2026-03-04 12:54:03'),(10,'wdaadw','dawdwadawdaw','awddawdwadaw','2026-03-04 12:55:11','2026-03-04 12:55:11'),(11,'dsawdad','dawawd','sdadwa','2026-03-04 12:55:51','2026-03-04 12:55:51'),(12,'t','t','t','2026-03-04 12:57:00','2026-03-04 12:57:00'),(13,'dawedreawsdad','dwadawdwad','dwadawdawd','2026-03-04 13:07:39','2026-03-04 13:07:39'),(14,'John Doe','john@example.com','+15551234567','2026-03-04 13:10:37','2026-03-04 13:10:37'),(15,'sdawd','dsadwad','awdawd','2026-03-04 13:11:02','2026-03-04 13:11:02'),(16,'dsad','sdada','sadasdaw','2026-03-04 13:15:57','2026-03-04 13:15:57'),(17,'dawdawad','sdadawdwaw','dawdawdawdawd','2026-03-04 13:16:56','2026-03-04 13:16:56'),(18,'dawdawd','dwadawd','dwadawdwa','2026-03-04 13:17:09','2026-03-04 13:17:09'),(19,'wsaezdfrxcsdwaezaszwde','wsdzaexfcxfdsecwzxsdzwxfeca','88888888','2026-03-04 13:21:43','2026-03-04 13:21:43'),(20,'jonas','jonas2002@gmail.com','55696885','2026-03-04 13:46:16','2026-03-04 13:46:16'),(21,'gustav','johndolton9009@gmail.com','58547125','2026-03-05 14:04:43','2026-03-05 14:04:43'),(22,'gggg','ggg','58689563','2026-03-05 15:18:16','2026-03-05 15:18:16'),(23,'kevin','kevinpilleman123@live.com','88886638','2026-03-05 15:21:19','2026-03-05 15:21:19'),(24,'per','jthrtdhydreshrg','45124585','2026-03-05 17:08:22','2026-03-05 17:08:22'),(25,'awdawd','awfvawfawfwada','54584125','2026-03-05 17:08:46','2026-03-05 17:08:46');
+/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-05 18:46:29
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: dbhair
+-- ------------------------------------------------------
+-- Server version	8.0.45
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `hairdresser`
+--
+
+DROP TABLE IF EXISTS `hairdresser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hairdresser` (
+  `HairdresserId` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100) NOT NULL,
+  `Email` varchar(100) NOT NULL,
+  `PhoneNumber` varchar(30) NOT NULL,
+  `CreatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`HairdresserId`),
+  UNIQUE KEY `Email` (`Email`),
+  UNIQUE KEY `PhoneNumber` (`PhoneNumber`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hairdresser`
+--
+
+LOCK TABLES `hairdresser` WRITE;
+/*!40000 ALTER TABLE `hairdresser` DISABLE KEYS */;
+INSERT INTO `hairdresser` VALUES (3,'Sophia Reed','sophia.reed@example.com','+1-555-123-4567','2026-03-04 10:33:09'),(4,'Liam Carter','liam.carter@example.com','+1-555-234-5678','2026-03-04 10:33:09'),(5,'Olivia Bennett','olivia.bennett@example.com','+1-555-345-6789','2026-03-04 10:33:09');
+/*!40000 ALTER TABLE `hairdresser` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-05 18:46:30
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: dbhair
+-- ------------------------------------------------------
+-- Server version	8.0.45
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `operator`
+--
+
+DROP TABLE IF EXISTS `operator`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `operator` (
+  `OperatorId` int NOT NULL AUTO_INCREMENT,
+  `Username` varchar(100) NOT NULL,
+  `PasswordHash` varchar(255) NOT NULL,
+  `Role` varchar(50) NOT NULL,
+  `CreatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`OperatorId`),
+  UNIQUE KEY `Username` (`Username`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `operator`
+--
+
+LOCK TABLES `operator` WRITE;
+/*!40000 ALTER TABLE `operator` DISABLE KEYS */;
+INSERT INTO `operator` VALUES (1,'test','$2a$10$1bAtoJSImSEyPRo32Jag4uFx1i.4ny0q/DfuwHWXZPf/w5misk.rC','Admin','2026-03-04 10:33:34'),(2,'t','$2a$10$55lenH9svMInZ6hv2hFZ1eyZPunjL6ta2UIl9Yaa1W3w2mYA2rz8a','Admin','2026-03-04 12:55:41'),(4,'test1','$2a$10$74i75VcQuO5raSLk.YvTjeZgXZ35SV4cL8wIBtCVlhWNYSJ.eovhG','Admin','2026-03-05 15:06:27'),(5,'tw','$2a$10$eZ8Fvet3faMLM0k2DcNCyeXDmF1TKYF79K4lCCPA8osFQ7GejusY2','Admin','2026-03-05 15:17:40'),(6,'john','$2a$10$cIkWjSKNEG.g83y3e8AwrORaS.Xualdn7wD/NQpZvjmf3k0q0qwd6','Employee','2026-03-05 15:20:06');
+/*!40000 ALTER TABLE `operator` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-05 18:46:30
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: dbhair
+-- ------------------------------------------------------
+-- Server version	8.0.45
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `treatment`
+--
+
+DROP TABLE IF EXISTS `treatment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `treatment` (
+  `TreatmentId` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100) NOT NULL,
+  `DurationMinutes` int NOT NULL,
+  `Price` decimal(10,2) NOT NULL,
+  `Type` varchar(100) NOT NULL,
+  `CreatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`TreatmentId`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `treatment`
+--
+
+LOCK TABLES `treatment` WRITE;
+/*!40000 ALTER TABLE `treatment` DISABLE KEYS */;
+INSERT INTO `treatment` VALUES (4,'Women\'s Haircut',60,55.00,'Haircut','2026-03-04 10:32:15'),(5,'Men\'s Haircut',30,30.00,'Haircut','2026-03-04 10:32:15'),(6,'Children\'s Haircut',30,25.00,'Haircut','2026-03-04 10:32:15'),(7,'Wash & Blow Dry (Short Hair)',30,35.00,'Styling','2026-03-04 10:32:15'),(8,'Wash & Blow Dry (Long Hair)',45,50.00,'Styling','2026-03-04 10:32:15'),(9,'Hair Styling / Updo',60,70.00,'Styling','2026-03-04 10:32:15'),(10,'Bridal Hair Styling',120,150.00,'Styling','2026-03-04 10:32:15'),(11,'Full Hair Coloring',120,120.00,'Coloring','2026-03-04 10:32:15'),(12,'Root Touch-Up',90,80.00,'Coloring','2026-03-04 10:32:15'),(13,'Balayage',150,180.00,'Coloring','2026-03-04 10:32:15'),(14,'Highlights (Half Head)',120,140.00,'Coloring','2026-03-04 10:32:15'),(15,'Highlights (Full Head)',150,190.00,'Coloring','2026-03-04 10:32:15'),(16,'Toner / Gloss',45,60.00,'Coloring','2026-03-04 10:32:15'),(17,'Keratin Treatment',180,250.00,'Treatment','2026-03-04 10:32:15'),(18,'Hair Botox Treatment',120,200.00,'Treatment','2026-03-04 10:32:15'),(19,'Deep Conditioning Treatment',30,40.00,'Treatment','2026-03-04 10:32:15'),(20,'Scalp Treatment',45,65.00,'Treatment','2026-03-04 10:32:15'),(21,'Perm',150,160.00,'Chemical Service','2026-03-04 10:32:15'),(22,'Hair Relaxing',120,140.00,'Chemical Service','2026-03-04 10:32:15'),(23,'Beard Trim',15,15.00,'Grooming','2026-03-04 10:32:15');
+/*!40000 ALTER TABLE `treatment` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-05 18:46:30
 ALTER TABLE Booking
 ADD COLUMN EndTime DATETIME NOT NULL AFTER StartTime;
 SET GLOBAL event_scheduler = ON;
