@@ -10,7 +10,7 @@
     <children>
         <Label alignment="CENTER" layoutX="810.0" layoutY="80.0" prefHeight="50.0" prefWidth="300.0" styleClass="title" text="Hårmoni'ka" />
         <Line layoutX="920.0" layoutY="170.0" endX="80.0" endY="0.0" startX="0.0" startY="0.0" stroke="white" />
-        <Label alignment="CENTER" layoutX="810.0" layoutY="355.0" prefWidth="300.0" styleClass="label-small" text="Administrator Panel · Login" />
+        <Label alignment="CENTER" layoutX="810.0" layoutY="200.0" prefWidth="300.0" styleClass="label-small-title" text="Administrator Panel · Login" />
         <Label alignment="CENTER" layoutX="710.0" layoutY="400.0" prefWidth="500.00" styleClass="danger" fx:id="errorLabel" opacity="0" style="-fx-font-size: 28; -fx-text-fill: rgba(255, 0, 0, 1)" />
         <MFXTextField layoutX="810.0" floatingText="Username" layoutY="550.0" prefHeight="70.0" prefWidth="300.0" styleClass="mfx-text-field" fx:id="usernameTextfield" />
         <MFXPasswordField layoutX="810.0" floatingText="Password" layoutY="640.0" prefHeight="70.0" prefWidth="300.0" styleClass="mfx-text-field" fx:id="passwordfield" />

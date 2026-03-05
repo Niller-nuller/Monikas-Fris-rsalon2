@@ -3,15 +3,30 @@
     src: url(../Fonts/Louis_George_Cafe.ttf);
 }
 
+
+@font-face {
+    -fx-font-family: "Roboto Regular";
+    src: url(../Fonts/Roboto-Thin.ttf);
+}
+
+
+
+
 .title {
-    -fx-font-family: "Louis George Cafe";
+    -fx-font-family: "Roboto Regular";
     -fx-font-size: 42;
     -fx-text-fill: rgba(255, 255, 255, 1);
+    -fx-font-weight: 300;
 }
 .label-small {
-    -fx-font-family: "Louis George Cafe";
+    -fx-font-family: "Roboto Regular";
     -fx-font-size: 16;
-    -fx-text-fill: rgba(255, 255, 255, 1);
+    -fx-text-fill: rgba(0, 0, 0);
+}
+.label-small-title {
+    -fx-font-family: "Roboto Regular";
+    -fx-font-size: 16;
+    -fx-text-fill: rgb(255, 255, 255);
 }
 
 
@@ -45,6 +60,75 @@
     -fx-border-width: 1;
 }
 
+.mfx-button-create {
+    -mfx-button-type: FLAT;
+    -fx-background-color: rgba(241, 241, 241, 0.18);
+    -fx-text-fill: rgba(0, 0, 0, 1);
+    -fx-border-color: rgba(0, 0, 0, 1);
+    -fx-border-radius: 2;
+    -fx-border-width: 1;
+    -fx-font-weight: 300;
+}
+
+.mfx-button.wizard {
+    -mfx-button-type: FLAT;
+    -fx-background-color: rgba(255, 255, 255, 0);
+    -fx-text-fill: rgba(0, 0, 0, 1);
+    -fx-border-color: rgba(0, 0, 0, 0.43);
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-font-family: "Roboto Regular";
+    -fx-font-weight: 200;
+}
+
+
+.mfx-button.wizard:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+.mfx-button.wizard.selected {
+    -fx-background-color: rgba(94, 129, 172, 0.18);
+    -fx-border-color: rgba(94, 129, 172, 1);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(0, 0, 0, 1);
+}
+
+
+.mfx-button.wizard:disabled {
+    -fx-opacity: 1;
+    -fx-background-color: rgba(0, 0, 0, 0.04);
+    -fx-border-color: rgba(0, 0, 0, 0.15);
+    -fx-text-fill: rgba(0, 0, 0, 0.35);
+}
+
+.mfx-button.wizard-tile {
+    -fx-min-width: 135;
+    -fx-pref-width: 135;
+    -fx-max-width: 135;
+
+    -fx-min-height: 50;
+    -fx-pref-height: 50;
+    -fx-max-height: 50;
+
+    -fx-alignment: center;
+}
+
+
+.mfx-button.ghost.selected {
+    -fx-background-color: rgba(255, 255, 255, 0.18);
+    -fx-border-color: rgba(255, 255, 255, 1);
+    -fx-border-width: 2;
+}
+
+
+.mfx-button.ghost:disabled {
+    -fx-opacity: 1;
+    -fx-text-fill: rgba(255, 255, 255, 0.35);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+}
+
 .mfx-text-field {
     -fx-background-radius: 12;
     -fx-border-radius: 12;
@@ -62,6 +146,27 @@
 
 
 .mfx-text-field .text-field {
+    -fx-background-color: transparent;
+}
+
+.mfx-text-field-create {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 10 12;
+    -fx-border-color: rgba(0, 0, 0, 0.43);
+    -fx-text-fill: rgba(0, 0, 0, 1);
+    -fx-font-family: Roboto Regular;
+}
+
+
+.mfx-text-field-create .floating-text {
+    -fx-font-weight: 300;
+    -fx-opacity: 0.85;
+    -fx-text-fill: rgba(0, 0, 0, 1);
+}
+
+
+.mfx-text-field-create .text-field {
     -fx-background-color: transparent;
 }
 
