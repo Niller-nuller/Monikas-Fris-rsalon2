@@ -1,0 +1,80 @@
+create database dbHair
+use dbHair
+CREATE TABLE Operator (
+    OperatorId INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,
+    Role VARCHAR(50) NOT NULL,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE Employee (
+    EmployeeId INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    PhoneNumber VARCHAR(30) NOT NULL UNIQUE,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE Customer (
+    CustomerId INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    PhoneNumber VARCHAR(30) NOT NULL UNIQUE,
+    LastActivityAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE Treatment (
+    TreatmentId INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    DurationMinutes INT NOT NULL,
+    Price DECIMAL(10,2) NOT NULL,  -- Better than DOUBLE for money
+    Type VARCHAR(100) NOT NULL,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE Booking (
+    BookingId INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerId INT NOT NULL,
+    EmployeeId INT NOT NULL,
+    TreatmentId INT NOT NULL,
+    StartTime DATETIME NOT NULL,
+    Status VARCHAR(30) NOT NULL,
+    CompletedAt DATETIME NULL,
+
+    FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId),
+    FOREIGN KEY (EmployeeId) REFERENCES Employee(EmployeeId),
+    FOREIGN KEY (TreatmentId) REFERENCES Treatment(TreatmentId)
+);
+ALTER TABLE Booking
+ADD COLUMN EndTime DATETIME NOT NULL AFTER StartTime;
+SET GLOBAL event_scheduler = ON;
+ALTER TABLE Booking MODIFY COLUMN EndTime DATETIME NULL;
+
+DELIMITER $$
+DROP EVENT IF EXISTS cleanup_old_bookings$$
+CREATE EVENT cleanup_old_bookings
+ON SCHEDULE EVERY 7 DAY
+STARTS '2026-03-10 02:00:00'
+DO
+BEGIN
+    DELETE FROM Booking WHERE EndTime < DATE_SUB(NOW(), INTERVAL 5 YEAR) LIMIT 5000;
+    DELETE FROM Customer WHERE LastActivityAt < DATE_SUB(NOW(), INTERVAL 5 YEAR);
+END$$
+DELIMITER ;
+SHOW EVENTS;
+SET GLOBAL event_scheduler = ON;
+DELIMITER $$
+
+DROP EVENT IF EXISTS auto_complete_bookings$$
+
+CREATE EVENT auto_complete_bookings
+ON SCHEDULE EVERY 1 Hour
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+    UPDATE Booking
+    SET Status = 'Completed',
+        CompletedAt = NOW()
+    WHERE Status = 'Booked'
+    AND EndTime <= NOW();
+END$$
+
+DELIMITER ;
